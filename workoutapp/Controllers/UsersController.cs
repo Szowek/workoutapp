@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using workoutapp.DAL;
 using workoutapp.Models;
 using workoutapp.Tools;
@@ -66,7 +65,10 @@ namespace workoutapp.Controllers
             {
                 string password = Password.hashPassword(user.Password);
 
-                var existingUser = _context.Users.Where(u => u.Username == user.Username && u.Password == password).FirstOrDefault();
+                var existingUser = _context.Users.Where(u => u.Username == user.Username && u.Password == password).Select(u => new
+                {
+                    u.Username
+                }).FirstOrDefault();
 
                 if (existingUser == null)
                 {
