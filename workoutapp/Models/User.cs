@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace workoutapp.Models
 {
@@ -6,18 +7,14 @@ namespace workoutapp.Models
     {
         public int UserId { get; set; }
 
-        [Required(ErrorMessage = "Enter your username")]
-        [StringLength(50)]
-        public string Username { get; set; }
+        [StringLength(30)]
+        public string? Username { get; set; }
 
-        [Required(ErrorMessage = "Enter your email")]
         [StringLength(50)]
         [RegularExpression(@"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}",
             ErrorMessage = "The email format is invalid")]
-        public string email { get; set; }
+        public string? Email { get; set; }
+        public string? Password { get; set; }
 
-        public virtual WorkoutPlan WorkoutPlan { get; set; }
-        public virtual UserData UserData { get; set; }
-        public virtual Calendar Calendar { get; set; }
     }
 }
