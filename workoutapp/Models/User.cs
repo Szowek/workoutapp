@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace workoutapp.Models
 {
@@ -15,6 +14,8 @@ namespace workoutapp.Models
             ErrorMessage = "The email format is invalid")]
         public string? Email { get; set; }
         public string? Password { get; set; }
+
+        public List<WorkoutPlan> WorkoutPlans { get; set; }
 
     }
 }
