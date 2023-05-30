@@ -33,7 +33,7 @@ namespace workoutapp.Controllers
                 var id = workoutPlan.WorkoutPlanId;
 
                 return Created($"/api/workoutplans/{id}", null);
-
+                //ss
             }
             else
             {
@@ -44,7 +44,7 @@ namespace workoutapp.Controllers
 
         // Metoda usuwania WorkoutPlanu dla danego użytkownika
         [HttpDelete("{workoutPlanId}")]
-        public async Task<IActionResult> DeleteWorkoutPlan(int userId, int workoutPlanId)
+        public async Task<IActionResult> DeleteWorkoutPlan(int userId, [FromRoute] int workoutPlanId)
         {
             var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userId);
 
@@ -56,6 +56,48 @@ namespace workoutapp.Controllers
                     _context.WorkoutPlans.Remove(workoutPlan);
                     _context.SaveChanges();
                     return NoContent();
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+
+        // Metoda zwracająca wszystkie WorkoutPlany użytkownika z listy
+        [HttpGet]
+        public async Task<IActionResult> GetAllWorkoutPlans(int userId)
+        {
+            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userId);
+
+            if (user != null)
+            {
+                var workoutPlans = user.WorkoutPlans.ToList();
+                return Ok(workoutPlans);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        // Metoda zwracająca WorkoutPlan użytkownika na podstawie id
+        [HttpGet("{workoutPlanId}")]
+        public async Task<IActionResult> GetWorkoutPlanById(int userId, [FromRoute] int workoutPlanId)
+        {
+            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userId);
+
+            if (user != null)
+            {
+                var workoutPlan = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+                if (workoutPlan != null)
+                {
+                    return Ok(workoutPlan);
                 }
                 else
                 {
