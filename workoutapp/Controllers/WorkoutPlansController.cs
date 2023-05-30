@@ -33,7 +33,7 @@ namespace workoutapp.Controllers
                 var id = workoutPlan.WorkoutPlanId;
 
                 return Created($"/api/workoutplans/{id}", null);
-                //ss
+                
             }
             else
             {
