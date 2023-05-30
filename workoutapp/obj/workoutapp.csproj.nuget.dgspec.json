@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\User\\Source\\Repos\\workoutapp\\workoutapp\\workoutapp.csproj": {}
+    "C:\\Users\\pkord\\Source\\Repos\\Szowek\\workoutapp\\workoutapp\\workoutapp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\User\\Source\\Repos\\workoutapp\\workoutapp\\workoutapp.csproj": {
+    "C:\\Users\\pkord\\Source\\Repos\\Szowek\\workoutapp\\workoutapp\\workoutapp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\User\\Source\\Repos\\workoutapp\\workoutapp\\workoutapp.csproj",
+        "projectUniqueName": "C:\\Users\\pkord\\Source\\Repos\\Szowek\\workoutapp\\workoutapp\\workoutapp.csproj",
         "projectName": "workoutapp",
-        "projectPath": "C:\\Users\\User\\Source\\Repos\\workoutapp\\workoutapp\\workoutapp.csproj",
-        "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\User\\Source\\Repos\\workoutapp\\workoutapp\\obj\\",
+        "projectPath": "C:\\Users\\pkord\\Source\\Repos\\Szowek\\workoutapp\\workoutapp\\workoutapp.csproj",
+        "packagesPath": "C:\\Users\\pkord\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\pkord\\Source\\Repos\\Szowek\\workoutapp\\workoutapp\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\pkord\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +22,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.302\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -45,6 +41,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.AspNet.Cors": {
+              "target": "Package",
+              "version": "[5.2.9, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.1, )"
@@ -83,7 +83,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

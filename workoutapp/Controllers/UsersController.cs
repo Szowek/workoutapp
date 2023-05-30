@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using workoutapp.DAL;
 using workoutapp.Models;
 using workoutapp.Tools;
 
 namespace workoutapp.Controllers
 {
+    [EnableCors("FrontEnd")]
     [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
