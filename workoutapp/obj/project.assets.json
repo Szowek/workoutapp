@@ -2101,19 +2101,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\pkord\\.nuget\\packages\\": {}
+    "C:\\Users\\Kamil\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\pkord\\Source\\Repos\\Szowek\\workoutapp\\workoutapp\\workoutapp.csproj",
+      "projectUniqueName": "C:\\Users\\Kamil\\Source\\Repos\\workoutapp\\workoutapp\\workoutapp.csproj",
       "projectName": "workoutapp",
-      "projectPath": "C:\\Users\\pkord\\Source\\Repos\\Szowek\\workoutapp\\workoutapp\\workoutapp.csproj",
-      "packagesPath": "C:\\Users\\pkord\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\pkord\\Source\\Repos\\Szowek\\workoutapp\\workoutapp\\obj\\",
+      "projectPath": "C:\\Users\\Kamil\\Source\\Repos\\workoutapp\\workoutapp\\workoutapp.csproj",
+      "packagesPath": "C:\\Users\\Kamil\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Kamil\\Source\\Repos\\workoutapp\\workoutapp\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\pkord\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Kamil\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
