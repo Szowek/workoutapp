@@ -6,7 +6,7 @@ using workoutapp.Models;
 namespace workoutapp.Controllers
 {
 
-    [Route("api/workoutplans")]
+    [Route("api/{userId}/workoutplans")]
     [ApiController]
     public class WorkoutPlansController : ControllerBase
     {
@@ -18,9 +18,10 @@ namespace workoutapp.Controllers
         }
 
         // Metoda tworzenia WorkoutPlanu dla danego użytkownika
-        [HttpPost]
-        public async Task<IActionResult> CreateWorkoutPlan(int userId, [FromBody] WorkoutPlan workoutPlan)
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateWorkoutPlan([FromRoute] int userId, WorkoutPlan workoutPlan)
         {
+            
             var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
 
             if (user != null)
@@ -32,13 +33,16 @@ namespace workoutapp.Controllers
 
                 var id = workoutPlan.WorkoutPlanId;
 
-                return Created($"/api/workoutplans/{id}", null);
+                return Created($"/api/{userId}/workoutplans/{id}", null);
+                
                 
             }
             else
             {
                 return NotFound();
             }
+            
+           
 
         }
 

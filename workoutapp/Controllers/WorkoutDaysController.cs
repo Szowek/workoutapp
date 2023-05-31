@@ -19,7 +19,7 @@ namespace workoutapp.Controllers
 
         // Metoda tworzenia WorkoutDaya dla danego WorkoutPlanu
         [HttpPost]
-        public async Task<IActionResult> CreateWorkoutDay(int workoutPlanId, [FromBody] WorkoutDay workoutDay)
+        public async Task<IActionResult> CreateWorkoutDay(int workoutPlanId, WorkoutDay workoutDay)
         {
             var workoutPlan = _context.WorkoutPlans.Include(wp => wp.WorkoutDays).FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
             if (workoutPlan != null)
@@ -41,8 +41,8 @@ namespace workoutapp.Controllers
 
 
         // Metoda usuwania WorkoutDaya dla danego WorkoutPlanu
-        [HttpDelete("workoutplans/{workoutPlanId}/workoutdays/{workoutDayId}")]
-        public async Task<IActionResult> DeleteWorkoutDay(int workoutPlanId, int workoutDayId)
+        [HttpDelete("{workoutDayId}")]
+        public async Task<IActionResult> DeleteWorkoutDay(int workoutPlanId, [FromRoute] int workoutDayId)
         {
             var workoutPlan = _context.WorkoutPlans.Include(wp => wp.WorkoutDays).FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
             if (workoutPlan != null)
@@ -65,7 +65,46 @@ namespace workoutapp.Controllers
             }
         }
 
+        // Metoda zwracająca wszystkie WorkoutDay dla WorkoutPlanu 
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAllWorkoutDays(int workoutPlanId)
+        {
+            var workoutPlan = await _context.WorkoutPlans.Include(wp => wp.WorkoutDays).FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
+            if (workoutPlan != null)
+            {
+                var workoutDays = workoutPlan.WorkoutDays.ToList();
+                return Ok(workoutDays);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
+        // Metoda zwracająca WorkoutDay na podstawie id dla WorkoutPlanu
+        [HttpGet("{workoutDayId}")]
+        public async Task<IActionResult> GetWorkoutDay(int workoutPlanId, [FromRoute] int workoutDayId)
+        {
+            var workoutPlan = await _context.WorkoutPlans.Include(wp => wp.WorkoutDays).FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
 
+            if (workoutPlan != null)
+            {
+                var workoutDay = workoutPlan.WorkoutDays.FirstOrDefault(wd => wd.WorkoutDayId == workoutDayId);
+                if (workoutDay != null)
+                {
+                    return Ok(workoutDay);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        
+        
     }
 }

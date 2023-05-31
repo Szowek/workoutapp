@@ -7,6 +7,6 @@
         public int WorkoutPlanId { get; set; }
         public WorkoutPlan WorkoutPlan { get; set; }
 
-        public List<Exercise> Exercises { get; set; }
+        public virtual List<Exercise> Exercises { get; set; }
     }
 }

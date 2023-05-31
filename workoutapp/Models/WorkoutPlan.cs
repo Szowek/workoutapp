@@ -6,7 +6,7 @@
         public int UserId { get; set; }
         public User User { get; set; }
 
-        public List<WorkoutDay> WorkoutDays { get; set; }
+        public virtual List<WorkoutDay> WorkoutDays { get; set; }
 
 
     }
