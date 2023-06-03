@@ -111,9 +111,9 @@ namespace workoutapp.Controllers
         public async Task<IActionResult> GetAllUsers()
         {
             //var users = _context.Users
-              //.Include(wp => wp.WorkoutPlans)
-              //.ToList();
-
+            //.Include(wp => wp.WorkoutPlans)
+            //.ToList();
+           
             return Ok(_context.Users.ToList());
         }
 

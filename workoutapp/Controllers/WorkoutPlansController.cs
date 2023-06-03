@@ -39,29 +39,12 @@ namespace workoutapp.Controllers
 
             _context.WorkoutPlans.Add(newWorkoutPlan);
             _context.SaveChanges();
-            /*
-            var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
-
-            if (user != null)
-            {
-
-                workoutPlan.UserId = user.UserId; // Przypisanie klucza obcego
-                user.WorkoutPlans.Add(workoutPlan);
-                _context.SaveChanges();
-
-                var id = workoutPlan.WorkoutPlanId;
-
-                return Created($"/api/{userId}/workoutplans/{id}", null);
-                
-                
-            }
-            else
-            {
-                return NotFound();
-            }
-            */
+          
             return Ok("Stworzyles WorkoutPlan");
-           
+
+            //var id = workoutPlan.WorkoutPlanId;
+            //return Created($"/api//workoutplans/{id}", null);
+
 
         }
 
@@ -93,7 +76,8 @@ namespace workoutapp.Controllers
             }
         }
 
-
+        
+        
         [HttpGet("getAllUserWorkoutPlans")]
         public async Task<IActionResult> GetAllUserWorkoutPlans()
         {
@@ -104,17 +88,26 @@ namespace workoutapp.Controllers
             {
                 return BadRequest();
             }
+            return Ok();
 
             //var users = _context.Users
             //.Include(wp => wp.WorkoutPlans)
             //.ToList();
             //workoutPlan.UserId = user.UserId; // Przypisanie klucza obcego
-            var workoutPlans = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            //var workoutPlanId = workoutPlan.WorkoutPlanId;
+            /*
+            var workoutplans = _context.WorkoutPlans
+            .Include(u => u.UserId)
+            .ToList();
+            */
+
+            //var workoutPlans = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
             //var workoutPlans = _context.WorkoutPlans.ToList();
             //var workoutPlans = _context.WorkoutPlans.Include(u => u.UserId).ToList();
              //var wp = HttpContext.User.FindFirstValue("WorkoutPlans");
 
-            return Ok(workoutPlans);
+            //return Ok(workoutplans);
             /*
             var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userId);
 
@@ -129,6 +122,7 @@ namespace workoutapp.Controllers
             }
             */
         }
+        
 
 
         // Metoda zwracająca wszystkie WorkoutPlany
@@ -142,16 +136,18 @@ namespace workoutapp.Controllers
 
         // Metoda zwracająca WorkoutPlan użytkownika na podstawie id
         [HttpGet("{workoutPlanId}")]
-        public async Task<IActionResult> GetWorkoutPlanById(int userId, [FromRoute] int workoutPlanId)
+        [Authorize]
+        public async Task<IActionResult> GetWorkoutPlanById([FromRoute] int workoutPlanId)
         {
-            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userId);
+            int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
 
             if (user != null)
             {
                 var workoutPlan = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
                 if (workoutPlan != null)
                 {
-                    return Ok(workoutPlan);
+                    return Ok(new { UserId = userID, WorkoutPlanId = workoutPlanId });
                 }
                 else
                 {
