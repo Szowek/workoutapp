@@ -110,6 +110,10 @@ namespace workoutapp.Controllers
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllUsers()
         {
+            //var users = _context.Users
+              //.Include(wp => wp.WorkoutPlans)
+              //.ToList();
+
             return Ok(_context.Users.ToList());
         }
 
@@ -170,10 +174,11 @@ namespace workoutapp.Controllers
 
         [Authorize]
         [HttpGet("logged")]
-        public async Task<IActionResult> getloggedInUserId()
+        public async Task<IActionResult> getloggedInUser()
         {
             int id = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-            return Ok(new {UserId = id});
+            string username = HttpContext.User.FindFirstValue("Username");
+            return Ok(new { UserId = id, Username = username });
         }
 
 

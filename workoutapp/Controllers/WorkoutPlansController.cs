@@ -25,7 +25,7 @@ namespace workoutapp.Controllers
         public async Task<IActionResult> CreateWorkoutPlan([FromBody]WorkoutPlanDto workoutPlan)
         {
             int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-            var user = _context.Users.FirstOrDefault(u => u.UserId == userID);
+            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
 
             if (userID == 0) 
             {
@@ -38,7 +38,6 @@ namespace workoutapp.Controllers
             };
 
             _context.WorkoutPlans.Add(newWorkoutPlan);
-            user.WorkoutPlans.Add(newWorkoutPlan);
             _context.SaveChanges();
             /*
             var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
@@ -68,9 +67,11 @@ namespace workoutapp.Controllers
 
         // Metoda usuwania WorkoutPlanu dla danego użytkownika
         [HttpDelete("{workoutPlanId}")]
-        public async Task<IActionResult> DeleteWorkoutPlan(int userId, [FromRoute] int workoutPlanId)
+        public async Task<IActionResult> DeleteWorkoutPlan([FromRoute] int workoutPlanId)
         {
-            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userId);
+            int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
+            
 
             if (user != null)
             {
@@ -79,7 +80,7 @@ namespace workoutapp.Controllers
                 {
                     _context.WorkoutPlans.Remove(workoutPlan);
                     _context.SaveChanges();
-                    return NoContent();
+                    return Ok("Usunales WorkoutPlan");
                 }
                 else
                 {
@@ -93,18 +94,25 @@ namespace workoutapp.Controllers
         }
 
 
-        // Metoda zwracająca wszystkie WorkoutPlany użytkownika z listy
-        [HttpGet("getAll")]
-        public async Task<IActionResult> GetAllWorkoutPlans()
+        [HttpGet("getAllUserWorkoutPlans")]
+        public async Task<IActionResult> GetAllUserWorkoutPlans()
         {
             int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-
+            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
+            
             if (userID == 0)
             {
                 return BadRequest();
             }
 
-            var workoutPlans = _context.WorkoutPlans.ToList();
+            //var users = _context.Users
+            //.Include(wp => wp.WorkoutPlans)
+            //.ToList();
+            //workoutPlan.UserId = user.UserId; // Przypisanie klucza obcego
+            var workoutPlans = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+            //var workoutPlans = _context.WorkoutPlans.ToList();
+            //var workoutPlans = _context.WorkoutPlans.Include(u => u.UserId).ToList();
+             //var wp = HttpContext.User.FindFirstValue("WorkoutPlans");
 
             return Ok(workoutPlans);
             /*
@@ -120,6 +128,16 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
             */
+        }
+
+
+        // Metoda zwracająca wszystkie WorkoutPlany
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAllWorkoutPlans()
+        {
+            var workoutPlans = _context.WorkoutPlans.ToList();
+
+            return Ok(workoutPlans);
         }
 
         // Metoda zwracająca WorkoutPlan użytkownika na podstawie id
