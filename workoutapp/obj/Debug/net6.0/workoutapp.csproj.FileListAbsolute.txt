@@ -308,3 +308,4 @@ C:\Users\Kamil\Source\Repos\workoutapp\workoutapp\obj\Debug\net6.0\refint\workou
 C:\Users\Kamil\Source\Repos\workoutapp\workoutapp\obj\Debug\net6.0\workoutapp.pdb
 C:\Users\Kamil\Source\Repos\workoutapp\workoutapp\obj\Debug\net6.0\workoutapp.genruntimeconfig.cache
 C:\Users\Kamil\Source\Repos\workoutapp\workoutapp\obj\Debug\net6.0\ref\workoutapp.dll
+C:\Users\Kamil\Source\Repos\workoutapp\workoutapp\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

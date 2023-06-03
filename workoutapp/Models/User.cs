@@ -15,7 +15,7 @@ namespace workoutapp.Models
         public string? Email { get; set; }
         public string? Password { get; set; }
 
-        public virtual List<WorkoutPlan> WorkoutPlans { get; set; }
+        public virtual List<WorkoutPlan>? WorkoutPlans { get; set; }
 
     }
 }

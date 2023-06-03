@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using workoutapp.DAL;
 using workoutapp.Models;
 
 namespace workoutapp.Controllers
 {
 
-    [Route("api/{userId}/workoutplans")]
+    [Route("api/workoutplans")]
     [ApiController]
     public class WorkoutPlansController : ControllerBase
     {
@@ -19,9 +21,26 @@ namespace workoutapp.Controllers
 
         // Metoda tworzenia WorkoutPlanu dla danego użytkownika
         [HttpPost("create")]
-        public async Task<IActionResult> CreateWorkoutPlan([FromRoute] int userId, WorkoutPlan workoutPlan)
+        [Authorize]
+        public async Task<IActionResult> CreateWorkoutPlan([FromBody]WorkoutPlanDto workoutPlan)
         {
-            
+            int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+            var user = _context.Users.FirstOrDefault(u => u.UserId == userID);
+
+            if (userID == 0) 
+            {
+                return BadRequest();
+            }
+
+            var newWorkoutPlan = new WorkoutPlan
+            {
+                UserId = userID
+            };
+
+            _context.WorkoutPlans.Add(newWorkoutPlan);
+            user.WorkoutPlans.Add(newWorkoutPlan);
+            _context.SaveChanges();
+            /*
             var user = _context.Users.FirstOrDefault(u => u.UserId == userId);
 
             if (user != null)
@@ -41,7 +60,8 @@ namespace workoutapp.Controllers
             {
                 return NotFound();
             }
-            
+            */
+            return Ok("Stworzyles WorkoutPlan");
            
 
         }
@@ -74,9 +94,20 @@ namespace workoutapp.Controllers
 
 
         // Metoda zwracająca wszystkie WorkoutPlany użytkownika z listy
-        [HttpGet]
-        public async Task<IActionResult> GetAllWorkoutPlans(int userId)
+        [HttpGet("getAll")]
+        public async Task<IActionResult> GetAllWorkoutPlans()
         {
+            int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            if (userID == 0)
+            {
+                return BadRequest();
+            }
+
+            var workoutPlans = _context.WorkoutPlans.ToList();
+
+            return Ok(workoutPlans);
+            /*
             var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userId);
 
             if (user != null)
@@ -88,6 +119,7 @@ namespace workoutapp.Controllers
             {
                 return NotFound();
             }
+            */
         }
 
         // Metoda zwracająca WorkoutPlan użytkownika na podstawie id

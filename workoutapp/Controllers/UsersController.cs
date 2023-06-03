@@ -1,6 +1,12 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
+using System.Text;
 using workoutapp.DAL;
 using workoutapp.Models;
 using workoutapp.Tools;
@@ -13,10 +19,12 @@ namespace workoutapp.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public UsersController(ApplicationDbContext context)
+        public UsersController(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
 
@@ -70,6 +78,7 @@ namespace workoutapp.Controllers
 
                 var existingUser = _context.Users.Where(u => u.Username == user.Username && u.Password == password).Select(u => new
                 {
+                    u.UserId,
                     u.Username
                 }).FirstOrDefault();
 
@@ -78,7 +87,19 @@ namespace workoutapp.Controllers
                     return BadRequest("Nieprawidlowa nazwa uzytkownika lub haslo");
                 }
 
-                return Ok(existingUser);
+                List<Claim> autClaims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, existingUser.Username),
+                    new Claim("userID", existingUser.UserId.ToString()),
+                    new Claim("Username", existingUser.Username)
+                };
+
+                var token = this.getToken(autClaims);
+
+                return Ok(new
+                {
+                    token = new JwtSecurityTokenHandler().WriteToken(token)
+                });
             }
             catch (Exception e)
             {
@@ -129,6 +150,34 @@ namespace workoutapp.Controllers
             return Ok();
 
         }
+
+        private JwtSecurityToken getToken(List<Claim> authClaim)
+        {
+            var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
+
+            var token = new JwtSecurityToken
+            (
+                issuer: _configuration["JWT:ValidIssuer"],
+                audience: _configuration["JWT:ValidAudience"],
+                expires: DateTime.Now.AddHours(24),
+                claims: authClaim,
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+            );
+
+          return token;
+           
+        }
+
+        [Authorize]
+        [HttpGet("logged")]
+        public async Task<IActionResult> getloggedInUserId()
+        {
+            int id = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+            return Ok(new {UserId = id});
+        }
+
+
+
 
     }
 }
