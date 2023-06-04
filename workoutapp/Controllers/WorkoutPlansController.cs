@@ -48,7 +48,7 @@ namespace workoutapp.Controllers
 
         }
 
-        // Metoda usuwania WorkoutPlanu dla danego użytkownika
+        // Metoda usuwania WorkoutPlanu danego użytkownika
         [HttpDelete("{workoutPlanId}")]
         public async Task<IActionResult> DeleteWorkoutPlan([FromRoute] int workoutPlanId)
         {
@@ -77,7 +77,7 @@ namespace workoutapp.Controllers
         }
 
         
-        
+        //Metoda zwracajaca wszystkie WorkoutPlany danego uzytkownika
         [HttpGet("getAllUserWorkoutPlans")]
         public async Task<IActionResult> GetAllUserWorkoutPlans()
         {
@@ -88,44 +88,21 @@ namespace workoutapp.Controllers
             {
                 return BadRequest();
             }
-            return Ok();
 
-            //var users = _context.Users
-            //.Include(wp => wp.WorkoutPlans)
-            //.ToList();
-            //workoutPlan.UserId = user.UserId; // Przypisanie klucza obcego
-
-            //var workoutPlanId = workoutPlan.WorkoutPlanId;
-            /*
-            var workoutplans = _context.WorkoutPlans
-            .Include(u => u.UserId)
-            .ToList();
-            */
-
-            //var workoutPlans = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
-            //var workoutPlans = _context.WorkoutPlans.ToList();
-            //var workoutPlans = _context.WorkoutPlans.Include(u => u.UserId).ToList();
-             //var wp = HttpContext.User.FindFirstValue("WorkoutPlans");
-
-            //return Ok(workoutplans);
-            /*
-            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userId);
-
-            if (user != null)
+            var WorkoutPlanList = _context.WorkoutPlans.Select (wp => new
             {
-                var workoutPlans = user.WorkoutPlans.ToList();
-                return Ok(workoutPlans);
-            }
-            else
-            {
-                return NotFound();
-            }
-            */
+                wp.WorkoutPlanId,
+                wp.UserId
+
+            }).Where(wp=>wp.UserId == userID).ToList();
+
+            return Ok(WorkoutPlanList);
+           
         }
         
 
 
-        // Metoda zwracająca wszystkie WorkoutPlany
+        // Metoda zwracająca wszystkie WorkoutPlany wszystkich uzytkownikow 
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllWorkoutPlans()
         {
