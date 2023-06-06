@@ -130,27 +130,29 @@ namespace workoutapp.Controllers
                 return NotFound();  
             }
 
-            user.Email = userDto.Email;
-            user.Password = userDto.Password;
-
-            var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
-
-            //sprawdzenie czy uzytkownik o podanym emailu juz istnieje
-            if (existingEmail != null)
+            if(!string.IsNullOrWhiteSpace(userDto.Email))
             {
-                return BadRequest("Uzytkownik o podanym adresie email juz istnieje.");
+                user.Email = userDto.Email;
+                var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+                //sprawdzenie czy uzytkownik o podanym emailu juz istnieje
+                if (existingEmail != null)
+                {
+                    return BadRequest("Uzytkownik o podanym adresie email juz istnieje.");
+                }
             }
 
-            //walidacja hasla
-            if (string.IsNullOrWhiteSpace(user.Password) || user.Password.Length < 3)
+            else if(!string.IsNullOrWhiteSpace(userDto.Password))
             {
-                return BadRequest("Haslo musi zawierac co najmniej 3 znaki.");
+                user.Password = userDto.Password;
+                if (user.Password.Length < 3)
+                {
+                    return BadRequest("Haslo musi zawierac co najmniej 3 znaki.");
+                }
+                //walidacja hasla
+                user.Password = Password.hashPassword(user.Password);
             }
-
-            user.Password = Password.hashPassword(user.Password);
 
             _context.SaveChanges();
-
             return Ok();
 
         }
