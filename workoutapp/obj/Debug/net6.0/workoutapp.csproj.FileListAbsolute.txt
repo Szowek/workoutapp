@@ -374,3 +374,15 @@ C:\Users\Kamil\Source\Repos\workout\workoutapp\obj\Debug\net6.0\refint\workoutap
 C:\Users\Kamil\Source\Repos\workout\workoutapp\obj\Debug\net6.0\workoutapp.pdb
 C:\Users\Kamil\Source\Repos\workout\workoutapp\obj\Debug\net6.0\workoutapp.genruntimeconfig.cache
 C:\Users\Kamil\Source\Repos\workout\workoutapp\obj\Debug\net6.0\ref\workoutapp.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\obj\Debug\net6.0\workoutapp.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\AutoMapper.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
+C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.Schema.dll

@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using workoutapp.Tools;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,9 +34,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+//builder.Services.AddControllers();
 
-builder.Services.AddControllers();
-builder.Services.AddControllersWithViews(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(opt =>
         opt.UseNpgsql(builder.Configuration.GetConnectionString("SampleDbConnection")));
 builder.Services.AddCors(options =>
@@ -53,18 +59,24 @@ builder.Services.AddCors(options =>
         );
 });
 
+builder.Services.AddSwaggerGen();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 app.UseHttpsRedirection();
-app.UseDefaultFiles();
-app.UseStaticFiles();
-
 
 app.UseRouting();
 
 app.UseCors("FrontEnd");
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "workoutapp");
+});
 
 
 app.UseAuthentication();

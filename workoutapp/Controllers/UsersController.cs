@@ -8,6 +8,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using System.Text;
 using workoutapp.DAL;
+using workoutapp.Dtos;
 using workoutapp.Models;
 using workoutapp.Tools;
 
@@ -29,14 +30,14 @@ namespace workoutapp.Controllers
 
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User user)
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
             try
             {
-                var existingUsername = _context.Users.FirstOrDefault(u => u.Username == user.Username);
-                var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+                var existingUsername = _context.Users.FirstOrDefault(u => u.Username == dto.Username);
+                var existingEmail = _context.Users.FirstOrDefault(u => u.Email == dto.Email);
 
-                user.Password = Password.hashPassword(user.Password);
+                dto.Password = Password.hashPassword(dto.Password);
 
                 //sprawdzenie czy uzytkownik o podanej nazwie juz istnieje
                 if (existingUsername != null)
@@ -50,14 +51,23 @@ namespace workoutapp.Controllers
                     return BadRequest("Uzytkownik o podanym adresie email juz istnieje.");
                 }
 
+             
                 //walidacja hasla
-                if (string.IsNullOrWhiteSpace(user.Password) || user.Password.Length < 3)
+                if (string.IsNullOrWhiteSpace(dto.Password) || dto.Password.Length < 3)
                 {
                     return BadRequest("Haslo musi zawierac co najmniej 3 znaki.");
                 }
 
+
+                var newUser = new User()
+                {
+                    Username = dto.Username,
+                    Email = dto.Email,
+                    Password = dto.Password
+                };
+
                 //dodanie uzytkownika do bazy danych
-                _context.Users.Add(user);
+                _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
 
                 return Ok("Zarejestrowales sie");
@@ -70,13 +80,13 @@ namespace workoutapp.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User user)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             try
             {
-                string password = Password.hashPassword(user.Password);
+                string password = Password.hashPassword(dto.Password);
 
-                var existingUser = _context.Users.Where(u => u.Username == user.Username && u.Password == password).Select(u => new
+                var existingUser = _context.Users.Where(u => u.Username == dto.Username && u.Password == password).Select(u => new
                 {
                     u.UserId,
                     u.Username
@@ -87,6 +97,7 @@ namespace workoutapp.Controllers
                     return BadRequest("Nieprawidlowa nazwa uzytkownika lub haslo");
                 }
 
+              
                 List<Claim> autClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, existingUser.Username),
@@ -110,11 +121,13 @@ namespace workoutapp.Controllers
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllUsers()
         {
-            //var users = _context.Users
-            //.Include(wp => wp.WorkoutPlans)
-            //.ToList();
+            var users = _context.Users
+            .Include(wp => wp.WorkoutPlans)
+            .ToList();
            
-            return Ok(_context.Users.ToList());
+            //return Ok(_context.Users.ToList());
+
+            return Ok(users);
         }
 
 
