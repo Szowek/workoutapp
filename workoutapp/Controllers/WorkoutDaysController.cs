@@ -131,7 +131,7 @@ namespace workoutapp.Controllers
 
         // Metoda zwracająca wszystkie WorkoutDay wszystkich WorkoutPlan
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAllWorkoutDays(int workoutPlanId)
+        public async Task<IActionResult> GetAllWorkoutDays()
         {
             var workoutDays = _context.WorkoutDays.ToList();
 

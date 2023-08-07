@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -13,16 +14,18 @@ namespace workoutapp.Controllers
     public class WorkoutPlansController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public WorkoutPlansController(ApplicationDbContext context)
+        public WorkoutPlansController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // Metoda tworzenia WorkoutPlanu dla danego użytkownika
         [HttpPost("create")]
         [Authorize]
-        public async Task<IActionResult> CreateWorkoutPlan([FromBody]WorkoutPlanDto workoutPlan)
+        public async Task<IActionResult> CreateWorkoutPlan([FromBody]WorkoutPlanDto dto)
         {
             int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
             var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
@@ -32,10 +35,9 @@ namespace workoutapp.Controllers
                 return BadRequest();
             }
 
-            var newWorkoutPlan = new WorkoutPlan
-            {
-                UserId = userID
-            };
+            var newWorkoutPlan = _mapper.Map<WorkoutPlan>(dto);
+
+            newWorkoutPlan.UserId = userID;
 
             _context.WorkoutPlans.Add(newWorkoutPlan);
             _context.SaveChanges();
@@ -89,14 +91,9 @@ namespace workoutapp.Controllers
                 return BadRequest();
             }
 
-            var WorkoutPlanList = _context.WorkoutPlans.Select (wp => new
-            {
-                wp.WorkoutPlanId,
-                wp.UserId
+            var workoutplansDtos = _mapper.Map<List< WorkoutPlanDto>>(user.WorkoutPlans);
 
-            }).Where(wp=>wp.UserId == userID).ToList();
-
-            return Ok(WorkoutPlanList);
+            return Ok(workoutplansDtos);
            
         }
         
@@ -106,7 +103,9 @@ namespace workoutapp.Controllers
         [HttpGet("getAll")]
         public async Task<IActionResult> GetAllWorkoutPlans()
         {
-            var workoutPlans = _context.WorkoutPlans.ToList();
+            var workoutPlans = _context.WorkoutPlans
+                .Include(u => u.User)
+                .ToList();
 
             return Ok(workoutPlans);
         }
