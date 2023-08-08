@@ -16,7 +16,7 @@ using workoutapp.Tools;
 namespace workoutapp.Controllers
 {
     [EnableCors("FrontEnd")]
-    [Route("api/access")]
+    [Route("api")]
     [ApiController]
     public class AccessController : ControllerBase
     {

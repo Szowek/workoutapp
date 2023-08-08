@@ -51,14 +51,15 @@ namespace workoutapp.Controllers
         {
             int UserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
-            if(UserID != id)
-            {
-                return NotFound();
-            }
 
             var user = _context
                 .Users
                 .FirstOrDefault(u => u.UserId == UserID);
+
+            if(user == null)
+            {
+                return NotFound();
+            }
 
                 user.Email = dto.Email;
                 var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
@@ -113,7 +114,12 @@ namespace workoutapp.Controllers
             int id = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
             string username = HttpContext.User.FindFirstValue("Username");
             string email = HttpContext.User.FindFirstValue("Email");
-            return Ok(new { UserId = id, Username = username, Email = email });
+            return Ok(new 
+            { 
+                UserId = id, 
+                Username = username,
+                Email = email 
+            });
         }
 
 

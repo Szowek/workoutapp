@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using workoutapp.DAL;
+using workoutapp.Dtos;
 using workoutapp.Models;
 
 namespace workoutapp.Controllers
@@ -25,7 +26,7 @@ namespace workoutapp.Controllers
         // Metoda tworzenia WorkoutPlanu dla danego użytkownika
         [HttpPost("create")]
         [Authorize]
-        public async Task<IActionResult> CreateWorkoutPlan([FromBody]WorkoutPlanDto dto)
+        public async Task<IActionResult> CreateWorkoutPlan([FromBody] CreateWorkoutPlanDto dto)
         {
             int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
             var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
@@ -109,6 +110,7 @@ namespace workoutapp.Controllers
 
             return Ok(workoutPlans);
         }
+
 
         // Metoda zwracająca WorkoutPlan użytkownika na podstawie id
         [HttpGet("{workoutPlanId}")]
