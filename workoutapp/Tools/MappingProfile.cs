@@ -14,6 +14,10 @@ namespace workoutapp.Tools
 
             CreateMap<CreateWorkoutPlanDto, WorkoutPlan>();
 
+            CreateMap<WorkoutDay, WorkoutDayDto>();
+
+            CreateMap<CreateWorkoutDayDto, WorkoutDay>();
+
         }
     }
 }

@@ -11,5 +11,7 @@ namespace workoutapp.DAL
         public DbSet<User> Users { get; set; }
         public DbSet<WorkoutPlan> WorkoutPlans { get; set; }
         public DbSet<WorkoutDay> WorkoutDays { get; set; }
+
+        public DbSet<Exercise> Exercises { get; set; }
     }
 }

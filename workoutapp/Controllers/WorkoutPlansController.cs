@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using System.Security.Claims;
 using workoutapp.DAL;
 using workoutapp.Dtos;
@@ -10,8 +11,9 @@ using workoutapp.Models;
 namespace workoutapp.Controllers
 {
 
-    [Route("api/workoutplans")]
+    [Route("api/{userId}/workoutplans")]
     [ApiController]
+    [Authorize]
     public class WorkoutPlansController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -25,71 +27,96 @@ namespace workoutapp.Controllers
 
         // Metoda tworzenia WorkoutPlanu dla danego użytkownika
         [HttpPost("create")]
-        [Authorize]
-        public async Task<IActionResult> CreateWorkoutPlan([FromBody] CreateWorkoutPlanDto dto)
+        public async Task<IActionResult> CreateWorkoutPlan([FromRoute] int userId, [FromBody] CreateWorkoutPlanDto dto)
         {
-            int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
-            if (userID == 0) 
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null) 
             {
-                return BadRequest();
+                return NotFound();
             }
 
+            if (loggeduserID != user.UserId)
+            {
+               return Forbid();
+            }
+
+            
             var newWorkoutPlan = _mapper.Map<WorkoutPlan>(dto);
 
-            newWorkoutPlan.UserId = userID;
+            newWorkoutPlan.UserId = userId;
 
             _context.WorkoutPlans.Add(newWorkoutPlan);
             _context.SaveChanges();
           
-            return Ok("Stworzyles WorkoutPlan");
+            //return Ok("Stworzyles WorkoutPlan");
 
-            //var id = workoutPlan.WorkoutPlanId;
-            //return Created($"/api//workoutplans/{id}", null);
-
+            var workoutplanId = newWorkoutPlan.WorkoutPlanId;
+            return Created($"/api{userId}/workoutplans/{workoutplanId}", null);
 
         }
 
         // Metoda usuwania WorkoutPlanu danego użytkownika
         [HttpDelete("{workoutPlanId}")]
-        public async Task<IActionResult> DeleteWorkoutPlan([FromRoute] int workoutPlanId)
+        public async Task<IActionResult> DeleteWorkoutPlan([FromRoute] int userId, [FromRoute] int workoutPlanId)
         {
-            int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
-            
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
-            if (user != null)
-            {
-                var workoutPlan = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
-                if (workoutPlan != null)
-                {
-                    _context.WorkoutPlans.Remove(workoutPlan);
-                    _context.SaveChanges();
-                    return Ok("Usunales WorkoutPlan");
-                }
-                else
-                {
-                    return NotFound();
-                }
-            }
-            else
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == loggeduserID);
+
+
+            if (user == null)
             {
                 return NotFound();
             }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var workoutPlan = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if(workoutPlan == null) 
+            {
+                return NotFound();
+            }
+
+            _context.WorkoutPlans.Remove(workoutPlan);
+            _context.SaveChanges();
+
+            return Ok("Usunales WorkoutPlan");
+
         }
 
         
         //Metoda zwracajaca wszystkie WorkoutPlany danego uzytkownika
         [HttpGet("getAllUserWorkoutPlans")]
-        public async Task<IActionResult> GetAllUserWorkoutPlans()
+        public async Task<IActionResult> GetAllUserWorkoutPlans([FromRoute] int userId)
         {
-            int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
             
-            if (userID == 0)
+            if (user == null)
             {
-                return BadRequest();
+                return NotFound();
+            }
+
+            if (user.UserId != loggeduserID )
+            {
+                return Forbid();
             }
 
             var workoutplansDtos = _mapper.Map<List< WorkoutPlanDto>>(user.WorkoutPlans);
@@ -102,40 +129,56 @@ namespace workoutapp.Controllers
 
         // Metoda zwracająca wszystkie WorkoutPlany wszystkich uzytkownikow 
         [HttpGet("getAll")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllWorkoutPlans()
         {
             var workoutPlans = _context.WorkoutPlans
                 .Include(u => u.User)
+                .Include(wd=>wd.WorkoutDays)
                 .ToList();
 
-            return Ok(workoutPlans);
+            var workoutplansDtos = _mapper.Map<List<WorkoutPlanDto>>(workoutPlans);
+
+            return Ok(workoutplansDtos);
         }
 
 
         // Metoda zwracająca WorkoutPlan użytkownika na podstawie id
         [HttpGet("{workoutPlanId}")]
-        [Authorize]
-        public async Task<IActionResult> GetWorkoutPlanById([FromRoute] int workoutPlanId)
+        public async Task<IActionResult> GetWorkoutPlanById([FromRoute] int userId, [FromRoute] int workoutPlanId)
         {
-            int userID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-            var user = _context.Users.Include(u => u.WorkoutPlans).FirstOrDefault(u => u.UserId == userID);
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
-            if (user != null)
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+
+            if(user == null)
             {
-                var workoutPlan = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
-                if (workoutPlan != null)
-                {
-                    return Ok(new { UserId = userID, WorkoutPlanId = workoutPlanId });
-                }
-                else
-                {
-                    return NotFound();
-                }
+                return NotFound();
+            } 
+            
+            if (user.UserId != loggeduserID ) 
+            { 
+                return Forbid(); 
             }
-            else
+
+            var workoutPlan = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if(workoutPlan == null) 
             {
                 return NotFound();
             }
+
+            var workoutPlanDto = _mapper.Map<WorkoutPlanDto>(workoutPlan);
+
+            //return Ok(new { UserId = userId, WorkoutPlanId = workoutPlanId });
+
+
+            return Ok(workoutPlanDto);
+
         }
 
     }

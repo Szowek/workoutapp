@@ -73,7 +73,8 @@ namespace workoutapp.Controllers
                 _context.Users.Add(newUser);
                 await _context.SaveChangesAsync();
 
-                return Ok("Zarejestrowales sie");
+                //return Ok("Zarejestrowales sie");
+                return Created("/api/login", null);
             }
             catch (Exception e)
             {

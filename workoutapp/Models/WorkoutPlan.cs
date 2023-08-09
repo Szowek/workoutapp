@@ -10,5 +10,6 @@
 
         public virtual List<WorkoutDay> WorkoutDays { get; set; }
 
+
     }
 }

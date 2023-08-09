@@ -16,8 +16,9 @@ using workoutapp.Tools;
 namespace workoutapp.Controllers
 {
     [EnableCors("FrontEnd")]
-    [Route("api/users")]
+    [Route("api/user")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -33,6 +34,7 @@ namespace workoutapp.Controllers
     
 
         [HttpGet("getAll")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = _context.Users
@@ -44,39 +46,69 @@ namespace workoutapp.Controllers
             return Ok(usersDtos);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById([FromRoute] int id)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+              .Users
+              .FirstOrDefault(u => u.UserId == id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+           
+            var userDto = _mapper.Map<UserDto>(user);
+
+            return Ok(userDto);
+
+        }
+
+
 
         [HttpPut("change/{id}")]
-        [Authorize]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserDto dto)
         {
-            int UserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
             var user = _context
                 .Users
-                .FirstOrDefault(u => u.UserId == UserID);
+                .FirstOrDefault(u => u.UserId == id);
 
             if(user == null)
             {
                 return NotFound();
             }
 
-                user.Email = dto.Email;
-                var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
-                //sprawdzenie czy uzytkownik o podanym emailu juz istnieje
-                if (existingEmail != null)
-                {
-                    return BadRequest("Uzytkownik o podanym adresie email juz istnieje.");
-                }
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
 
-                user.Password = dto.Password;
-                if (user.Password.Length < 3)
-                {
-                    return BadRequest("Haslo musi zawierac co najmniej 3 znaki.");
-                }
 
-                //walidacja hasla
-                user.Password = Password.hashPassword(user.Password);
+            user.Email = dto.Email;
+            var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
+            //sprawdzenie czy uzytkownik o podanym emailu juz istnieje
+            if (existingEmail != null)
+            {
+              return BadRequest("Uzytkownik o podanym adresie email juz istnieje.");
+            }
+
+            user.Password = dto.Password;
+            if (user.Password.Length < 3)
+            {
+              return BadRequest("Haslo musi zawierac co najmniej 3 znaki.");
+            }
+
+            //walidacja hasla
+            user.Password = Password.hashPassword(user.Password);
             
 
             _context.SaveChanges();
@@ -86,19 +118,24 @@ namespace workoutapp.Controllers
         }
 
         [HttpDelete("delete/{id}")]
-        [Authorize]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            int UserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+ 
 
-            if (UserID != id)
+            var user = _context
+                .Users
+                .FirstOrDefault(u => u.UserId == id);
+
+            if(user  == null)
             {
                 return NotFound();
             }
 
-            var user = _context
-                .Users
-                .FirstOrDefault(u => u.UserId == UserID);
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
 
             _context.Users.Remove(user);
             _context.SaveChanges();
@@ -107,18 +144,15 @@ namespace workoutapp.Controllers
         }
 
 
-        [Authorize]
         [HttpGet("logged")]
         public async Task<IActionResult> getloggedInUser()
         {
-            int id = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
             string username = HttpContext.User.FindFirstValue("Username");
-            string email = HttpContext.User.FindFirstValue("Email");
             return Ok(new 
             { 
-                UserId = id, 
-                Username = username,
-                Email = email 
+                UserId = loggeduserID, 
+                Username = username 
             });
         }
 

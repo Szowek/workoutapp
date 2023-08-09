@@ -6,6 +6,7 @@ using System.Text;
 using workoutapp.Tools;
 using System.Text.Json.Serialization;
 using workoutapp;
+using workoutapp.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,6 +63,7 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
+builder.Services.AddScoped<ExerciseSeeder>();
 
 
 var app = builder.Build();
