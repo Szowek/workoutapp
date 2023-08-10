@@ -58,7 +58,7 @@ namespace workoutapp.Controllers
                 return NotFound(); 
             }
 
-            if(workoutPlan.User.UserId != loggeduserID)
+            if(workoutPlan.User.UserId != userId)
             {
                 return Forbid();  // Użytkownik nie ma uprawnień do tworzenia WorkoutDay dla WorkoutPlan innego użytkownika
             }
@@ -110,7 +110,7 @@ namespace workoutapp.Controllers
                     return NotFound();
                 }
 
-                if (workoutPlan.User.UserId != loggeduserID)
+                if (workoutPlan.User.UserId != userId)
                 {
                     return Forbid();
                 }
@@ -120,6 +120,12 @@ namespace workoutapp.Controllers
                 {
                     return NotFound();
                 }
+
+                if(workoutDay.WorkoutDayId != workoutDayId)            
+                {
+                   return Forbid();
+                }
+
 
                 _context.WorkoutDays.Remove(workoutDay);
                 _context.SaveChanges();
@@ -159,7 +165,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (workoutPlan.User.UserId != loggeduserID)
+            if (workoutPlan.User.UserId != userId)
             {
                 return Forbid();
             }
@@ -231,7 +237,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (workoutPlan.User.UserId != loggeduserID)
+            if (workoutPlan.User.UserId != userId)
             {
                 return Forbid();
             }
@@ -242,6 +248,11 @@ namespace workoutapp.Controllers
             if(workoutDay == null) 
             {
                 return NotFound();
+            }
+
+            if (workoutDay.WorkoutDayId != workoutDayId)
+            {
+                return Forbid();
             }
 
             var workoutDayDto = _mapper.Map<WorkoutDayDto>(workoutDay);

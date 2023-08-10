@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace workoutapp.Models
+namespace workoutapp.Dtos
 {
-    public class UserExercise
+    public class CreateExerciseDto
     {
-        public int UserExerciseId { get; set; }
-
         [Required]
         public string ExerciseName { get; set; }
 
@@ -20,7 +18,5 @@ namespace workoutapp.Models
         public int? NumberOfRepeats { get; set; }
 
         public int WorkoutDayId { get; set; }
-
-        public virtual WorkoutDay WorkoutDay { get; set; }
     }
 }

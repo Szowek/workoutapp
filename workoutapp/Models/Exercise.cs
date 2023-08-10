@@ -16,15 +16,13 @@ namespace workoutapp.Models
         [Required]
         public string BodyPart { get; set;}
 
-        [Required]
-        public int NumberOfSeries { get; set; }
+        public int? NumberOfSeries { get; set; }
 
-        [Required]
-        public int NumberOfRepeats { get; set;}
+        public int? NumberOfRepeats { get; set;}
 
         public int WorkoutDayId { get; set; }
 
-        public virtual WorkoutPlan WorkoutPlan { get; set; }
+        public virtual WorkoutDay WorkoutDay { get; set; }
 
     }
 }

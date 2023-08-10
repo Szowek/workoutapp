@@ -2,6 +2,6 @@
 {
     public class CreateWorkoutDayDto
     {
-        public int WorkoutPlanId;
+        public int WorkoutPlanId { get; set; }
     }
 }

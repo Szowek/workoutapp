@@ -6,8 +6,6 @@ namespace workoutapp.Dtos
     {
         public int WorkoutDayId { get; set; }
 
-        //public int WorkoutPlanId { get; set; }
-        //
-        public virtual List<Exercise> Exercises { get; set; }
+        public virtual List<UserExercise> UserExercises { get; set; }
     }
 }

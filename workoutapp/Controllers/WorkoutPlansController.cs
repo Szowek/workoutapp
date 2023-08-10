@@ -83,11 +83,19 @@ namespace workoutapp.Controllers
                 return Forbid();
             }
 
-            var workoutPlan = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+            var workoutPlan = _context
+                .WorkoutPlans
+                .Include(wp=>wp.WorkoutDays)
+                .FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
 
             if(workoutPlan == null) 
             {
                 return NotFound();
+            }
+
+            if(workoutPlan.WorkoutPlanId != workoutPlanId) 
+            {
+                return Forbid();
             }
 
             _context.WorkoutPlans.Remove(workoutPlan);
@@ -165,11 +173,19 @@ namespace workoutapp.Controllers
                 return Forbid(); 
             }
 
-            var workoutPlan = user.WorkoutPlans.FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+            var workoutPlan = _context
+                .WorkoutPlans
+                .Include(wp=>wp.WorkoutDays)
+                .FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
 
             if(workoutPlan == null) 
             {
                 return NotFound();
+            }
+
+            if (workoutPlan.WorkoutPlanId != workoutPlanId)
+            {
+                return Forbid();
             }
 
             var workoutPlanDto = _mapper.Map<WorkoutPlanDto>(workoutPlan);
