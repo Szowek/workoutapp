@@ -22,6 +22,17 @@ namespace workoutapp.Tools
 
             CreateMap<CreateExerciseDto, UserExercise>();
 
+            //CreateMap<UserExercise, Exercise>();
+
+            //CreateMap<Exercise, UserExercise>();
+
+            CreateMap<Note, NoteDto>();
+
+            CreateMap<CreateNoteDto, Note>();
+
+            CreateMap<Calendar, CalendarDto>();
+
+            CreateMap<CreateCalendarDto, Calendar>();
         }
     }
 }

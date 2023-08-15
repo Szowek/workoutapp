@@ -33,19 +33,6 @@ namespace workoutapp.Controllers
         }
     
 
-        [HttpGet("getAll")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            var users = _context.Users
-            .Include(wp => wp.WorkoutPlans)
-            .ToList();
-  
-           var usersDtos = _mapper.Map<List<UserDto>>(users);
-
-            return Ok(usersDtos);
-        }
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUserById([FromRoute] int id)
         {
@@ -53,6 +40,8 @@ namespace workoutapp.Controllers
 
             var user = _context
               .Users
+              .Include(u => u.WorkoutPlans)
+              .Include(u => u.Calendars)
               .FirstOrDefault(u => u.UserId == id);
 
             if (user == null)
@@ -72,8 +61,7 @@ namespace workoutapp.Controllers
         }
 
 
-
-        [HttpPut("change/{id}")]
+        [HttpPut("{id}/change")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserDto dto)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -117,7 +105,7 @@ namespace workoutapp.Controllers
 
         }
 
-        [HttpDelete("delete/{id}")]
+        [HttpDelete("{id}/delete")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -144,20 +132,70 @@ namespace workoutapp.Controllers
         }
 
 
-        [HttpGet("logged")]
+        [HttpGet]
         public async Task<IActionResult> getloggedInUser()
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
-            string username = HttpContext.User.FindFirstValue("Username");
-            return Ok(new 
-            { 
-                UserId = loggeduserID, 
-                Username = username 
-            });
+
+            var user = _context
+              .Users
+              .Include(u=> u.WorkoutPlans)
+              .Include(u=>u.Calendars)
+              .FirstOrDefault(u => u.UserId == loggeduserID);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+
+            var userDto = _mapper.Map<UserDto>(user);
+
+            return Ok(userDto);
         }
 
+        [HttpGet("{id}/preferred")]
+        public async Task<IActionResult> GetPreferredWorkoutPlans([FromRoute] int id, [FromRoute] WorkoutPlanDto dto)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
+            var user = _context
+                .Users
+                .Include(u=>u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == id);
 
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var workoutPlans = user
+               .WorkoutPlans
+               .Where(wp => wp.isPreferred == true);
+
+            
+            var workoutplansDtos = _mapper.Map<List<WorkoutPlanDto>>(workoutPlans);
+
+            return Ok(workoutplansDtos);
+           
+        }
+
+        [HttpGet("getAll")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = _context.Users
+            .Include(wp => wp.WorkoutPlans)
+            .Include(u => u.Calendars)
+            .ToList();
+
+            return Ok(users);
+        }
 
     }
 }

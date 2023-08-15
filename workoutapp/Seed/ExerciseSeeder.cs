@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using workoutapp.DAL;
 using workoutapp.Models;
-
+/*
 namespace workoutapp.Seed
 {
     public class ExerciseSeeder
@@ -15,12 +15,15 @@ namespace workoutapp.Seed
 
         public void Seed()
         {
-            //sprawdzenie polaczenia do bazy danych:
             if (_context.Database.CanConnect())
             {
-                var exercises = GetExercises();
-                _context.Exercises.AddRange(exercises);
-                _context.SaveChanges();
+                if(!_context.Exercises.Any())
+                {
+                    var exercises = GetExercises();
+                    _context.Exercises.AddRange(exercises);
+                    _context.SaveChanges();
+                }
+                
             }
         }
 
@@ -41,7 +44,7 @@ namespace workoutapp.Seed
                     ExerciseName = "Pin bench press",
                     Description = "Pin bench press is a weightlifting move. Barbell starts on safety pins, " +
                     "adding dead-stop challenge. Lift and press for chest, triceps, and shoulder strength. Targets bench press weak points.",
-                    BodyPart = "Chest",               
+                    BodyPart = "Chest"            
                 },
                 new Exercise() 
                 {
@@ -116,3 +119,4 @@ namespace workoutapp.Seed
     }
 
 }
+*/

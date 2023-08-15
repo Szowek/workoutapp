@@ -83,8 +83,9 @@ namespace workoutapp.Controllers
             return Created($"api/{userId}/workoutplans/{workoutPlanId}/workoutdays/{workoutDayId}/exercises/{exerciseId}", null);
 
         }
-        
-        [HttpPost("delete/{userExerciseId}")]
+
+
+        [HttpPost("{userExerciseId}/delete")]
         public async Task<IActionResult> DeleteExercise([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int workoutDayId, [FromRoute] int userExerciseId )
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -155,7 +156,7 @@ namespace workoutapp.Controllers
 
         }
 
-        [HttpGet("GetAllExercises")]
+        [HttpGet]
         public async Task<IActionResult> GetAllExercises([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int workoutDayId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -293,6 +294,108 @@ namespace workoutapp.Controllers
             return Ok();
         }
 
+        [HttpGet("getsamples")]
+        public async Task<IActionResult> GetReadyExercises()
+        {
+            var exercises = _context
+            .Exercises
+            .ToList();
+
+            return Ok(exercises);
+        }
+
+
+        [HttpPost("getsamples/{exerciseId}")]
+        public async Task<IActionResult> AddToUserExercises([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int workoutDayId, [FromRoute] int exerciseId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var workoutPlan = await _context.WorkoutPlans
+            .Include(wp => wp.User)
+            .Include(wp => wp.WorkoutDays)
+            .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var workoutDay = await _context.WorkoutDays
+                .Include(wd => wd.WorkoutPlan)
+                .Include(wd => wd.UserExercises)
+                .FirstOrDefaultAsync(wd => wd.WorkoutDayId == workoutDayId);
+
+            if (workoutDay == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutDay.WorkoutPlanId != workoutPlanId)
+            {
+                return Forbid();
+            }
+            /*
+            var exercise = _context.Exercises
+              .FirstOrDefault(e => e.ExerciseId == exerciseId);
+
+            if (exercise == null)
+            {
+                return NotFound();
+            }
+
+            var addedExercise = _mapper.Map<UserExercise>(exercise);
+
+            _context.UserExercises.Add(addedExercise);
+            _context.SaveChanges();
+
+            return Ok("Dodales cwiczenie");
+            */
+            var exerciseToAdd = await _context.Exercises.FirstOrDefaultAsync(e => e.ExerciseId == exerciseId);
+
+            if (exerciseToAdd == null)
+            {
+                return NotFound("Exercise not found");
+            }
+
+            var userExercise = new UserExercise
+            {
+                ExerciseName = exerciseToAdd.ExerciseName,
+                Description = exerciseToAdd.Description,
+                BodyPart = exerciseToAdd.BodyPart,
+                NumberOfSeries = exerciseToAdd.NumberOfSeries,
+                NumberOfRepeats = exerciseToAdd.NumberOfRepeats,
+                WorkoutDayId = workoutDayId
+            };
+
+            _context.UserExercises.Add(userExercise);
+            _context.SaveChanges();
+
+            return Ok("Dodales cwiczenie");
+
+        }
+
+
+
         [HttpGet("{userExerciseId}")]
         public async Task<IActionResult> GetExerciseById([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int workoutDayId, [FromRoute] int userExerciseId)
         {
@@ -367,7 +470,7 @@ namespace workoutapp.Controllers
 
         [HttpGet("getAll")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllExercise()
+        public async Task<IActionResult> GetAllUserExercise()
         {
             var exercises = _context.UserExercises
             .Include(e=> e.WorkoutDay)

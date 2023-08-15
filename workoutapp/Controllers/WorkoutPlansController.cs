@@ -62,7 +62,7 @@ namespace workoutapp.Controllers
         }
 
         // Metoda usuwania WorkoutPlanu danego użytkownika
-        [HttpDelete("{workoutPlanId}")]
+        [HttpDelete("{workoutPlanId}/delete")]
         public async Task<IActionResult> DeleteWorkoutPlan([FromRoute] int userId, [FromRoute] int workoutPlanId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -107,7 +107,7 @@ namespace workoutapp.Controllers
 
         
         //Metoda zwracajaca wszystkie WorkoutPlany danego uzytkownika
-        [HttpGet("getAllUserWorkoutPlans")]
+        [HttpGet]
         public async Task<IActionResult> GetAllUserWorkoutPlans([FromRoute] int userId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -127,29 +127,15 @@ namespace workoutapp.Controllers
                 return Forbid();
             }
 
-            var workoutplansDtos = _mapper.Map<List< WorkoutPlanDto>>(user.WorkoutPlans);
+          
+
+
+            var workoutplansDtos = _mapper.Map<List<WorkoutPlanDto>>(user.WorkoutPlans);
 
             return Ok(workoutplansDtos);
            
         }
         
-
-
-        // Metoda zwracająca wszystkie WorkoutPlany wszystkich uzytkownikow 
-        [HttpGet("getAll")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAllWorkoutPlans()
-        {
-            var workoutPlans = _context.WorkoutPlans
-                .Include(u => u.User)
-                .Include(wd=>wd.WorkoutDays)
-                .ToList();
-
-            var workoutplansDtos = _mapper.Map<List<WorkoutPlanDto>>(workoutPlans);
-
-            return Ok(workoutplansDtos);
-        }
-
 
         // Metoda zwracająca WorkoutPlan użytkownika na podstawie id
         [HttpGet("{workoutPlanId}")]
@@ -176,6 +162,7 @@ namespace workoutapp.Controllers
             var workoutPlan = _context
                 .WorkoutPlans
                 .Include(wp=>wp.WorkoutDays)
+                .Include(wp=>wp.Notes)
                 .FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
 
             if(workoutPlan == null) 
@@ -190,11 +177,22 @@ namespace workoutapp.Controllers
 
             var workoutPlanDto = _mapper.Map<WorkoutPlanDto>(workoutPlan);
 
-            //return Ok(new { UserId = userId, WorkoutPlanId = workoutPlanId });
-
-
             return Ok(workoutPlanDto);
 
+        }
+
+
+        // Metoda zwracająca wszystkie WorkoutPlany wszystkich uzytkownikow 
+        [HttpGet("getAll")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllWorkoutPlans()
+        {
+            var workoutPlans = _context.WorkoutPlans
+                .Include(u => u.User)
+                .Include(wd => wd.WorkoutDays)
+                .ToList();
+
+            return Ok(workoutPlans);
         }
 
     }

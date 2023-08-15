@@ -6,7 +6,7 @@ using System.Text;
 using workoutapp.Tools;
 using System.Text.Json.Serialization;
 using workoutapp;
-using workoutapp.Seed;
+//using workoutapp.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,7 +41,6 @@ builder.Services.AddControllers()
         {
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
-//builder.Services.AddControllers();
 
 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<ApplicationDbContext>(opt =>
         opt.UseNpgsql(builder.Configuration.GetConnectionString("SampleDbConnection")));
@@ -63,12 +62,22 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddSwaggerGen();
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
-builder.Services.AddScoped<ExerciseSeeder>();
+//builder.Services.AddScoped<ExerciseSeeder>();
 
 
 var app = builder.Build();
 
+//var scope = app.Services.CreateScope();
+//var seeder = scope.ServiceProvider.GetRequiredService<ExerciseSeeder>();
+
 // Configure the HTTP request pipeline.
+
+if(app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseAuthentication();
 
 app.UseHttpsRedirection();
 
@@ -82,8 +91,6 @@ app.UseSwaggerUI(options =>
     options.SwaggerEndpoint("/swagger/v1/swagger.json", "workoutapp");
 });
 
-
-app.UseAuthentication();
 
 app.UseAuthorization();
 

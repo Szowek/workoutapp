@@ -22,6 +22,51 @@ namespace workoutapp.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("workoutapp.Models.Calendar", b =>
+                {
+                    b.Property<int>("CalendarId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CalendarId"));
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CalendarId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Calendars");
+                });
+
+            modelBuilder.Entity("workoutapp.Models.CalendarDay", b =>
+                {
+                    b.Property<int>("CalendarDayId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CalendarDayId"));
+
+                    b.Property<DateTime>("CalendarDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("CalendarId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("WorkoutDayId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("CalendarDayId");
+
+                    b.HasIndex("CalendarId");
+
+                    b.HasIndex("WorkoutDayId")
+                        .IsUnique();
+
+                    b.ToTable("CalendarDays");
+                });
+
             modelBuilder.Entity("workoutapp.Models.Exercise", b =>
                 {
                     b.Property<int>("ExerciseId")
@@ -48,14 +93,107 @@ namespace workoutapp.Migrations
                     b.Property<int?>("NumberOfSeries")
                         .HasColumnType("integer");
 
-                    b.Property<int>("WorkoutDayId")
-                        .HasColumnType("integer");
-
                     b.HasKey("ExerciseId");
 
-                    b.HasIndex("WorkoutDayId");
-
                     b.ToTable("Exercises");
+
+                    b.HasData(
+                        new
+                        {
+                            ExerciseId = 1,
+                            BodyPart = "Shoulders",
+                            Description = "Pull-ups are a bodyweight exercise where you grip an overhead bar with palms facing away. By pulling your body upward, you target your upper back muscles, especially the latissimus dorsi. This exercise also engages your biceps and core, providing a well-rounded upper body workout.",
+                            ExerciseName = "Pull ups"
+                        },
+                        new
+                        {
+                            ExerciseId = 2,
+                            BodyPart = "Chest",
+                            Description = "Pin bench press is a weightlifting move. Barbell starts on safety pins, adding dead-stop challenge. Lift and press for chest, triceps, and shoulder strength. Targets bench press weak points.",
+                            ExerciseName = "Pin bench press"
+                        },
+                        new
+                        {
+                            ExerciseId = 3,
+                            BodyPart = "Shoulders",
+                            Description = "Face pull is an exercise using a cable machine and rope attachment. Pull the rope towards your face, keeping elbows high, to work rear deltoids and upper back. Enhances shoulder stability and posture.",
+                            ExerciseName = "Face pull"
+                        },
+                        new
+                        {
+                            ExerciseId = 4,
+                            BodyPart = "Triceps",
+                            Description = "Skull Crusher Pullover combines two exercises. Begin with a weightlifting barbell, lower it to your forehead (skull crusher), then move it over and behind your head (pullover). This engages triceps, chest, and lats for a comprehensive upper body workout.",
+                            ExerciseName = "Skull crusher pullover"
+                        },
+                        new
+                        {
+                            ExerciseId = 5,
+                            BodyPart = "Biceps",
+                            Description = "Barbell biceps curl is a classic exercise for building arm strength. Hold a barbell with an underhand grip, palms facing up, and curl it upward using your biceps. Lower the barbell with control. This targets the biceps muscles, helping to develop arm definition and strength.",
+                            ExerciseName = "Barbell biceps curl"
+                        },
+                        new
+                        {
+                            ExerciseId = 6,
+                            BodyPart = "Core",
+                            Description = "The Swiss ball plank is an effective core exercise. Start in a plank position with your forearms on a Swiss ball and toes on the ground. Maintain a straight line from head to heels, engaging your core and stabilizing muscles. This exercise helps improve core strength, stability, and balance.\"",
+                            ExerciseName = "Swiss ball plank"
+                        },
+                        new
+                        {
+                            ExerciseId = 7,
+                            BodyPart = "Calf",
+                            Description = "The standing barbell calf raise is a calf-strengthening exercise. Stand upright with a barbell resting on your upper back. Rise onto your toes by pushing through the balls of your feet, lifting your heels as high as possible. Lower your heels back down for a full range of motion. This exercise targets the calf muscles, enhancing lower leg strength and definition.",
+                            ExerciseName = "Standing barbell calf raise"
+                        },
+                        new
+                        {
+                            ExerciseId = 8,
+                            BodyPart = "Quadriceps thighs ",
+                            Description = "Reverse lunges with a barbell are a lower body exercise. Hold a barbell on your upper back, step back with one leg into a lunge, lowering your back knee toward the ground. Push through your front heel to return to the standing position. This targets the quadriceps, hamstrings, and glutes, enhancing leg strength and stability.",
+                            ExerciseName = "Reverse lunges with barbell"
+                        },
+                        new
+                        {
+                            ExerciseId = 9,
+                            BodyPart = "Lower back",
+                            Description = "The elevated deadlift is a weightlifting exercise that involves lifting a barbell from an elevated platform. Stand on weight plates or blocks, grasp the barbell with an overhand grip, and lift by extending your hips and knees. Lower the barbell back down with control. This exercise targets the hamstrings, glutes, lower back, and core, promoting overall strength and muscle development.",
+                            ExerciseName = "Elevated deadlift"
+                        },
+                        new
+                        {
+                            ExerciseId = 10,
+                            BodyPart = "Biceps",
+                            Description = "Dumbbell supinated biceps curls are a biceps-strengthening exercise. Hold dumbbells with palms facing up (supinated grip) and curl them upward while contracting your biceps. Lower the dumbbells with control. This exercise effectively isolates and builds the biceps muscles, enhancing arm strength and definition.",
+                            ExerciseName = "Dumbbell supinated biceps curls"
+                        });
+                });
+
+            modelBuilder.Entity("workoutapp.Models.Note", b =>
+                {
+                    b.Property<int>("NoteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("NoteId"));
+
+                    b.Property<string>("NoteName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("WorkoutPlanId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("NoteId");
+
+                    b.HasIndex("WorkoutPlanId");
+
+                    b.ToTable("Notes");
                 });
 
             modelBuilder.Entity("workoutapp.Models.User", b =>
@@ -153,6 +291,9 @@ namespace workoutapp.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
+                    b.Property<bool?>("isPreferred")
+                        .HasColumnType("boolean");
+
                     b.HasKey("WorkoutPlanId");
 
                     b.HasIndex("UserId");
@@ -160,15 +301,45 @@ namespace workoutapp.Migrations
                     b.ToTable("WorkoutPlans");
                 });
 
-            modelBuilder.Entity("workoutapp.Models.Exercise", b =>
+            modelBuilder.Entity("workoutapp.Models.Calendar", b =>
                 {
-                    b.HasOne("workoutapp.Models.WorkoutDay", "WorkoutDay")
-                        .WithMany()
-                        .HasForeignKey("WorkoutDayId")
+                    b.HasOne("workoutapp.Models.User", "User")
+                        .WithMany("Calendars")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("workoutapp.Models.CalendarDay", b =>
+                {
+                    b.HasOne("workoutapp.Models.Calendar", "Calendar")
+                        .WithMany("CalendarDays")
+                        .HasForeignKey("CalendarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("workoutapp.Models.WorkoutDay", "WorkoutDay")
+                        .WithOne("CalendarDay")
+                        .HasForeignKey("workoutapp.Models.CalendarDay", "WorkoutDayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Calendar");
+
                     b.Navigation("WorkoutDay");
+                });
+
+            modelBuilder.Entity("workoutapp.Models.Note", b =>
+                {
+                    b.HasOne("workoutapp.Models.WorkoutPlan", "WorkoutPlan")
+                        .WithMany("Notes")
+                        .HasForeignKey("WorkoutPlanId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkoutPlan");
                 });
 
             modelBuilder.Entity("workoutapp.Models.UserExercise", b =>
@@ -204,18 +375,30 @@ namespace workoutapp.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("workoutapp.Models.Calendar", b =>
+                {
+                    b.Navigation("CalendarDays");
+                });
+
             modelBuilder.Entity("workoutapp.Models.User", b =>
                 {
+                    b.Navigation("Calendars");
+
                     b.Navigation("WorkoutPlans");
                 });
 
             modelBuilder.Entity("workoutapp.Models.WorkoutDay", b =>
                 {
+                    b.Navigation("CalendarDay")
+                        .IsRequired();
+
                     b.Navigation("UserExercises");
                 });
 
             modelBuilder.Entity("workoutapp.Models.WorkoutPlan", b =>
                 {
+                    b.Navigation("Notes");
+
                     b.Navigation("WorkoutDays");
                 });
 #pragma warning restore 612, 618

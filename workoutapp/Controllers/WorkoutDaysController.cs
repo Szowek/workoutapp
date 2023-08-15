@@ -77,7 +77,7 @@ namespace workoutapp.Controllers
 
 
         // Metoda usuwania WorkoutDaya dla danego WorkoutPlanu
-        [HttpDelete("delete/{workoutDayId}")]
+        [HttpDelete("{workoutDayId}/delete")]
         public async Task<IActionResult> DeleteWorkoutDay([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int workoutDayId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -135,7 +135,7 @@ namespace workoutapp.Controllers
         }
 
         //metoda zwracajaca wszystkie WorkoutDay danego WorkoutPlan
-        [HttpGet("getAllWorkoutDays")]
+        [HttpGet]
         public async Task<IActionResult> GetAllWorkoutDaysWP([FromRoute] int userId, [FromRoute] int workoutPlanId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -170,16 +170,6 @@ namespace workoutapp.Controllers
                 return Forbid();
             }
 
-            //var wpID =  _context.WorkoutPlans.FirstOrDefaultAsync(wp => wp.WorkoutPlanId== workoutPlanId);
-            //var workoutplan = _context.WorkoutPlans.Include(wp=>wp.WorkoutDays).FirstOrDefault(wp=>wp.WorkoutPlanId);
-            /*
-            var WorkoutDayList = _context.WorkoutDays.Select(wd => new
-            {
-                wd.WorkoutDayId,
-                wd.WorkoutPlanId
-
-            }).Where(wd => wd.WorkoutPlanId == workoutPlanId).ToList();
-            */
 
             var workoutdaysDtos = _mapper.Map<List<WorkoutDayDto>>(workoutPlan.WorkoutDays);
 
@@ -187,21 +177,6 @@ namespace workoutapp.Controllers
 
         }
 
-
-        // Metoda zwracająca wszystkie WorkoutDay wszystkich WorkoutPlan
-        [HttpGet("GetAll")]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAllWorkoutDays()
-        {
-            var workoutDays = _context.WorkoutDays
-                .Include(wp => wp.WorkoutPlan)
-                .ToList();
-
-            var workoutdaysDtos = _mapper.Map<List<WorkoutDayDto>>(workoutDays);
-
-            return Ok(workoutdaysDtos);
-
-        }
 
         // Metoda zwracająca WorkoutDay na podstawie id dla WorkoutPlanu
         [HttpGet("{workoutDayId}")]
@@ -258,6 +233,20 @@ namespace workoutapp.Controllers
             var workoutDayDto = _mapper.Map<WorkoutDayDto>(workoutDay);
 
             return Ok(workoutDayDto);
+        }
+
+
+        // Metoda zwracająca wszystkie WorkoutDay wszystkich WorkoutPlan
+        [HttpGet("GetAll")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetAllWorkoutDays()
+        {
+            var workoutDays = _context.WorkoutDays
+                .Include(wp => wp.WorkoutPlan)
+                .ToList();
+
+            return Ok(workoutDays);
+
         }
     }
 }

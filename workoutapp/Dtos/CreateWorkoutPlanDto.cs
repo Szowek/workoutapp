@@ -2,8 +2,8 @@
 {
     public class CreateWorkoutPlanDto
     {
-        //public int WorkoutPlanId { get; set; }
         public string Name { get; set; }
+        public bool? isPreferred { get; set; } = false;
         public int UserId { get; set; }
     }
 }

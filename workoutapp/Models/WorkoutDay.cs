@@ -9,5 +9,7 @@
         public virtual WorkoutPlan WorkoutPlan { get; set; }
 
         public virtual List<UserExercise> UserExercises { get; set; }
+
+        public virtual CalendarDay CalendarDay { get; set; }
     }
 }

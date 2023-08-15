@@ -19,7 +19,12 @@ namespace workoutapp.Models
         [Required]
         public string Password { get; set; }
 
+        //public WorkoutPlan WorkoutPlanId { get; set; }
+        //public Calendar CalendarId { get; set; }
+
         public virtual List<WorkoutPlan>? WorkoutPlans { get; set; }
+
+        public virtual List<Calendar>? Calendars { get; set; }
 
     }
 }

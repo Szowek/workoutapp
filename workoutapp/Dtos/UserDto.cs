@@ -5,7 +5,7 @@ namespace workoutapp.Dtos
 {
     public class UserDto
     {
-        public int UserId { get; set; }
+        //public int UserId { get; set; }
 
         [StringLength(30)]
         
@@ -18,8 +18,12 @@ namespace workoutapp.Dtos
         public string Email { get; set; }
 
         
-        public string Password { get; set; }
+        //public string Password { get; set; }
+
+        //public WorkoutPlan WorkoutPlanId { get; set; }
+        //public Calendar CalendarId { get; set; }
 
         public List<WorkoutPlan>? WorkoutPlans { get; set; }
+        public List<WorkoutPlan>? Calendars { get; set; }
     }
 }
