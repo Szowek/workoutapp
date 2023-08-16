@@ -4,7 +4,7 @@ namespace workoutapp.Dtos
 {
     public class UserExerciseDto
     {
-        //public int UserExerciseId { get; set; }
+        public int UserExerciseId { get; set; }
 
         [Required]
         public string ExerciseName { get; set; }

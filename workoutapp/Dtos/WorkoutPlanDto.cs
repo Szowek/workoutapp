@@ -5,7 +5,7 @@ namespace workoutapp.Models
 {
     public class WorkoutPlanDto
     {
-        // public int WorkoutPlanId { get; set; }
+         public int WorkoutPlanId { get; set; }
         public string Name { get; set; }
 
         public bool? isPreferred { get; set; } = false;

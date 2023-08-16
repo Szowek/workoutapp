@@ -4,7 +4,7 @@ namespace workoutapp.Dtos
 {
     public class NoteDto
     {
-        //public int NoteId { get; set; }
+        public int NoteId { get; set; }
         public string NoteName { get; set; }
 
         [Required]

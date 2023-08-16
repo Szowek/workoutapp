@@ -5,7 +5,7 @@ namespace workoutapp.Dtos
 {
     public class UserDto
     {
-        //public int UserId { get; set; }
+        public int UserId { get; set; }
 
         [StringLength(30)]
         
