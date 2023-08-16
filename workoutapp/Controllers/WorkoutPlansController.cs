@@ -127,8 +127,6 @@ namespace workoutapp.Controllers
                 return Forbid();
             }
 
-          
-
 
             var workoutplansDtos = _mapper.Map<List<WorkoutPlanDto>>(user.WorkoutPlans);
 

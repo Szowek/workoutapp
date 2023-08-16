@@ -7,7 +7,7 @@ namespace workoutapp.Models
         public int CalendarDayId { get; set; }
 
         [Required]
-        public DateTime CalendarDate { get; set; }
+        public string CalendarDate { get; set; }
         public int CalendarId { get; set; }
         public int WorkoutDayId { get; set; }
         public virtual Calendar Calendar { get; set; }

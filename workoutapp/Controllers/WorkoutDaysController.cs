@@ -66,10 +66,25 @@ namespace workoutapp.Controllers
             var newWorkoutDay = _mapper.Map<WorkoutDay>(dto);
             newWorkoutDay.WorkoutPlanId = workoutPlanId;
 
+            var date = newWorkoutDay.CalendarDate;
+
+
+            var existingCalendarDay = await _context.CalendarDays.FirstOrDefaultAsync(cd => cd.CalendarDate == date);
+
+            if (existingCalendarDay == null)
+            {
+                return BadRequest("Nie ma takiego utworzonego dnia");
+            }
+
+            existingCalendarDay.WorkoutDayId = newWorkoutDay.WorkoutDayId;
+
             _context.WorkoutDays.Add(newWorkoutDay);
             _context.SaveChanges();
 
             var workoutdayId = newWorkoutDay.WorkoutDayId;
+
+         
+
             //return Ok("Stworzyles WorkoutDay");
             return Created($"api/{userId}/workoutplans/{workoutPlanId}/workoutdays/{workoutdayId}", null);
 
@@ -218,7 +233,10 @@ namespace workoutapp.Controllers
             }
 
 
-            var workoutDay = workoutPlan.WorkoutDays.FirstOrDefault(wd => wd.WorkoutDayId == workoutDayId);
+            var workoutDay = _context
+                .WorkoutDays
+                .Include(wd=>wd.UserExercises)
+                .FirstOrDefault(wd => wd.WorkoutDayId == workoutDayId);
 
             if(workoutDay == null) 
             {

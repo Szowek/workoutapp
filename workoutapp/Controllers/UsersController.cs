@@ -38,11 +38,10 @@ namespace workoutapp.Controllers
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
-            var user = _context
-              .Users
-              .Include(u => u.WorkoutPlans)
-              .Include(u => u.Calendars)
-              .FirstOrDefault(u => u.UserId == id);
+            var user = _context.Users
+            .Include(u=>u.WorkoutPlans)
+            .Include(u => u.Calendars)
+            .FirstOrDefault(u => u.UserId == id);
 
             if (user == null)
             {
@@ -53,9 +52,19 @@ namespace workoutapp.Controllers
             {
                 return Forbid();
             }
-           
-            var userDto = _mapper.Map<UserDto>(user);
 
+
+            //user.WorkoutPlans.Select(wp => wp.Name).ToList();
+            //var workoutPlans = _context.WorkoutPlans
+      // .Where(wp => wp.UserId == user.UserId)
+       //.Select(wp => new { wp.Id, wp.Name }) // Wybierz tylko niektóre właściwości z WorkoutPlans
+      // .ToList();
+
+
+           var userDto = _mapper.Map<UserDto>(user);
+
+           //var details = userDto.WorkoutPlans.Select(wp => new {wp.Name}).ToList();
+            
             return Ok(userDto);
 
         }
@@ -155,7 +164,7 @@ namespace workoutapp.Controllers
         }
 
         [HttpGet("{id}/preferred")]
-        public async Task<IActionResult> GetPreferredWorkoutPlans([FromRoute] int id, [FromRoute] WorkoutPlanDto dto)
+        public async Task<IActionResult> GetPreferredWorkoutPlans([FromRoute] int id)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
@@ -176,7 +185,8 @@ namespace workoutapp.Controllers
 
             var workoutPlans = user
                .WorkoutPlans
-               .Where(wp => wp.isPreferred == true);
+               .Where(wp => wp.isPreferred == true)
+               .ToList();
 
             
             var workoutplansDtos = _mapper.Map<List<WorkoutPlanDto>>(workoutPlans);

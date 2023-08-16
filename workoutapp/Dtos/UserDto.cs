@@ -23,7 +23,7 @@ namespace workoutapp.Dtos
         //public WorkoutPlan WorkoutPlanId { get; set; }
         //public Calendar CalendarId { get; set; }
 
-        public List<WorkoutPlan>? WorkoutPlans { get; set; }
-        public List<WorkoutPlan>? Calendars { get; set; }
+        public List<WorkoutPlanDto>? WorkoutPlans { get; set; }
+        public List<CalendarDto>? Calendars { get; set; }
     }
 }

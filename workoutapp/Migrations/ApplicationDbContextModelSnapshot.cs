@@ -48,8 +48,9 @@ namespace workoutapp.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CalendarDayId"));
 
-                    b.Property<DateTime>("CalendarDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<string>("CalendarDate")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("CalendarId")
                         .HasColumnType("integer");
@@ -180,11 +181,13 @@ namespace workoutapp.Migrations
 
                     b.Property<string>("NoteName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int>("WorkoutPlanId")
                         .HasColumnType("integer");
@@ -266,6 +269,10 @@ namespace workoutapp.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("WorkoutDayId"));
+
+                    b.Property<string>("CalendarDate")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("WorkoutPlanId")
                         .HasColumnType("integer");
