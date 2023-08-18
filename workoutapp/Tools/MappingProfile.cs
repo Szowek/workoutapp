@@ -31,6 +31,18 @@ namespace workoutapp.Tools
             CreateMap<Calendar, CalendarDto>();
 
             CreateMap<CreateCalendarDto, Calendar>();
+
+            CreateMap<CreateCalendarDayDto, CalendarDay>();
+
+            CreateMap<CalendarDay, CalendarDayDto>();
+
+            CreateMap<Meal, MealDto>();
+
+            CreateMap<CreateMealDto, Meal>();
+
+            CreateMap<Product, ProductDto>(); 
+            
+            CreateMap<CreateProductDto, Product>(); 
         }
     }
 }

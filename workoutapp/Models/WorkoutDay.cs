@@ -8,6 +8,8 @@ namespace workoutapp.Models
 
         public int WorkoutPlanId { get; set; }
 
+        public int CalendarDayId { get; set; }
+
         [Required]
         public string? CalendarDate { get; set; }
 

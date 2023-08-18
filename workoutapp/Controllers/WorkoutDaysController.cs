@@ -51,6 +51,7 @@ namespace workoutapp.Controllers
 
             var workoutPlan = await _context.WorkoutPlans
             .Include(wp => wp.User)
+            .Include(wp=>wp.WorkoutDays)
             .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
 
             if (workoutPlan == null)
@@ -60,7 +61,7 @@ namespace workoutapp.Controllers
 
             if(workoutPlan.User.UserId != userId)
             {
-                return Forbid();  // Użytkownik nie ma uprawnień do tworzenia WorkoutDay dla WorkoutPlan innego użytkownika
+                return Forbid(); 
             }
 
             var newWorkoutDay = _mapper.Map<WorkoutDay>(dto);
@@ -68,15 +69,23 @@ namespace workoutapp.Controllers
 
             var date = newWorkoutDay.CalendarDate;
 
+            var existingWorkoutDay = workoutPlan.WorkoutDays.FirstOrDefault(wd => wd.CalendarDate == date);
+            if(existingWorkoutDay != null) 
+            {
+                return BadRequest("Dzien o tej dacie juz istnieje");
+            }
 
-            var existingCalendarDay = await _context.CalendarDays.FirstOrDefaultAsync(cd => cd.CalendarDate == date);
+
+            var existingCalendarDay = await _context.CalendarDays
+              .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date)
+              .FirstOrDefaultAsync();
 
             if (existingCalendarDay == null)
             {
                 return BadRequest("Nie ma takiego utworzonego dnia");
             }
 
-            existingCalendarDay.WorkoutDayId = newWorkoutDay.WorkoutDayId;
+            newWorkoutDay.CalendarDayId = existingCalendarDay.CalendarDayId;
 
             _context.WorkoutDays.Add(newWorkoutDay);
             _context.SaveChanges();
@@ -155,10 +164,6 @@ namespace workoutapp.Controllers
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
-            var workoutPlan = await _context.WorkoutPlans
-           .Include(wp => wp.User)
-           .Include(wp => wp.WorkoutDays)
-           .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
 
             var user = _context
                 .Users
@@ -170,21 +175,30 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (loggeduserID != user.UserId)
+            if (user.UserId != loggeduserID)
             {
                 return Forbid();
             }
+
+            var workoutPlan = await _context.WorkoutPlans
+       .Include(wp => wp.User)
+       .Include(wp => wp.WorkoutDays)
+       .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
 
             if (workoutPlan == null)
             {
                 return NotFound();
             }
 
-            if (workoutPlan.User.UserId != userId)
+            if (workoutPlan.User.UserId != loggeduserID)
             {
                 return Forbid();
             }
 
+            if(workoutPlan.WorkoutPlanId != workoutPlanId) 
+            {
+                return Forbid();
+            }
 
             var workoutdaysDtos = _mapper.Map<List<WorkoutDayDto>>(workoutPlan.WorkoutDays);
 
@@ -231,7 +245,6 @@ namespace workoutapp.Controllers
             {
                 return Forbid();
             }
-
 
             var workoutDay = _context
                 .WorkoutDays

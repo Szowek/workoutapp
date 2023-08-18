@@ -1,9 +1,12 @@
-﻿namespace workoutapp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace workoutapp.Models
 {
     public class WorkoutPlan
     {
         public int WorkoutPlanId { get; set; }
 
+        [Required]
         public string? Name { get; set; }
         public int UserId { get; set; }
 

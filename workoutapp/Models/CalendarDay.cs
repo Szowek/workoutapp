@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace workoutapp.Models
 {
@@ -9,8 +10,9 @@ namespace workoutapp.Models
         [Required]
         public string CalendarDate { get; set; }
         public int CalendarId { get; set; }
-        public int WorkoutDayId { get; set; }
-        public virtual Calendar Calendar { get; set; }
+
         public virtual WorkoutDay WorkoutDay { get; set; }
+        public virtual Calendar Calendar { get; set; }
+        public virtual List<Meal> Meals { get; set; }
     }
 }

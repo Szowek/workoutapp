@@ -2,9 +2,9 @@
 
 namespace workoutapp.Dtos
 {
-    public class CreateWorkoutDayDto
+    public class CreateCalendarDayDto
     {
-        public int WorkoutPlanId { get; set; }
+        public int CalendarId { get; set; }
 
         [Required]
         public string CalendarDate { get; set; }

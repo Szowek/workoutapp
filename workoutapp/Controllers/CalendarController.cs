@@ -87,7 +87,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (calendar.CalendarId != calendarId)
+            if (calendar.UserId != userId)
             {
                 return Forbid();
             }
@@ -100,7 +100,7 @@ namespace workoutapp.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllUserWorkoutCalendars([FromRoute] int userId)
+        public async Task<IActionResult> GetAllUserCalendars([FromRoute] int userId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
@@ -156,7 +156,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (calendar.CalendarId != calendarId)
+            if (calendar.UserId != userId)
             {
                 return Forbid();
             }

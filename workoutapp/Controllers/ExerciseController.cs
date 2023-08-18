@@ -194,7 +194,7 @@ namespace workoutapp.Controllers
             var workoutDay = await _context.WorkoutDays
                 .Include(wd => wd.WorkoutPlan)
                 .Include(wd => wd.UserExercises)
-                .FirstOrDefaultAsync(wd => wd.WorkoutDayId == workoutDayId);
+                .FirstOrDefaultAsync(c => c.WorkoutDayId == workoutDayId);
 
             if (workoutDay == null)
             {

@@ -16,103 +16,193 @@ namespace workoutapp.DAL
         public DbSet<Note> Notes { get; set; }
         public DbSet<Calendar> Calendars { get; set; }
         public DbSet<CalendarDay> CalendarDays { get; set; }
+        public DbSet<Meal> Meals { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductCategory> ProductCategories { get; set; }   
 
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+  
             modelBuilder.Entity<Exercise>().HasData(
 
                new Exercise()
                {
                    ExerciseId = 1,
-                   ExerciseName = "Pull ups",
-                   Description = "Pull-ups are a bodyweight exercise where you grip an overhead bar with palms facing away. By pulling your body upward, " +
-                    "you target your upper back muscles, especially the latissimus dorsi. This exercise also engages your biceps and core, " +
-                    "providing a well-rounded upper body workout.",
-                   BodyPart = "Shoulders"
+                   ExerciseName = "Podciąganie na drążku",
+                   Description = "Podciąganie na drążku to ćwiczenie wykonywane przy użyciu wagi ciała, polegające na chwyceniu drążka nad głową, " +
+                   "dłonie skierowane na zewnątrz. Poprzez unoszenie ciała ku górze skupiasz się na mięśniach górnej części pleców, szczególnie na mięśniu czworobocznym. " +
+                   "Ćwiczenie to również angażuje bicepsy i mięśnie brzucha, zapewniając wszechstronny trening górnej części ciała.",
+                   BodyPart = "Plecy"
                },
                 new Exercise()
                 {
                     ExerciseId = 2,
-                    ExerciseName = "Pin bench press",
-                    Description = "Pin bench press is a weightlifting move. Barbell starts on safety pins, " +
-                    "adding dead-stop challenge. Lift and press for chest, triceps, and shoulder strength. Targets bench press weak points.",
-                    BodyPart = "Chest"
+                    ExerciseName = "Wyciskanie sztangi",
+                    Description = "Wyciskanie sztangi to ruch wykonywany przy użyciu ciężarów. Sztanga startuje na kołkach bezpieczeństwa, " +
+                    "co dodaje wyzwań związanych z bezruchem. Unoszenie i wyciskanie wzmacnia mięśnie klatki piersiowej, tricepsów i ramion. " +
+                    "Ćwiczenie to koncentruje się na osłabionych punktach w wyciskaniu sztangi.",
+                    BodyPart = "Klatka piersiowa"
                 },
                 new Exercise()
                 {
                     ExerciseId = 3,
-                    ExerciseName = "Face pull",
-                    Description = "Face pull is an exercise using a cable machine and rope attachment. " +
-                    "Pull the rope towards your face, keeping elbows high, to work rear deltoids and upper back. Enhances shoulder stability and posture.",
-                    BodyPart = "Shoulders"
+                    ExerciseName = "Podciąganie liny do twarzy",
+                    Description = "Podciąganie liny do twarzy to ćwiczenie wykonywane przy użyciu maszyny z linką i końcówką w kształcie liny. " +
+                    "Pociągnij linkę w kierunku twarzy, trzymając łokcie wysoko, aby zaangażować mięśnie naramienne tyłowe oraz górną część pleców. " +
+                    "Ćwiczenie to poprawia stabilność ramion i postawę ciała.",
+                    BodyPart = "Barki"
                 },
                 new Exercise()
                 {
                     ExerciseId = 4,
-                    ExerciseName = "Skull crusher pullover",
-                    Description = "Skull Crusher Pullover combines two exercises. Begin with a weightlifting barbell, lower it to your forehead (skull crusher), " +
-                    "then move it over and behind your head (pullover). This engages triceps, chest, and lats for a comprehensive upper body workout.",
-                    BodyPart = "Triceps"
-
+                    ExerciseName = "Skull crusher i pullover",
+                    Description = "Połączenie ćwiczeń Skull Crusher i Pullover. Zacznij od wyciągnięcia sztangi na wyciskanie nad czoło (skull crusher), " +
+                    "a następnie przenieś ją nad głowę (pullover). Zaangażowana zostaje trójgłowa część ramienia, klatka piersiowa i mięśnie pleców, " +
+                    "zapewniając kompleksowy trening górnej części ciała.",
+                    BodyPart = "Mięsień trójgłowy ramienia"
                 },
                 new Exercise()
                 {
                     ExerciseId = 5,
-                    ExerciseName = "Barbell biceps curl",
-                    Description = "Barbell biceps curl is a classic exercise for building arm strength. " +
-                    "Hold a barbell with an underhand grip, palms facing up, and curl it upward using your biceps. " +
-                    "Lower the barbell with control. This targets the biceps muscles, helping to develop arm definition and strength.",
+                    ExerciseName = "Uginanie ramion ze sztangą",
+                    Description = "Uginanie ramion ze sztangą to klasyczne ćwiczenie wzmacniające mięśnie ramion. Trzymaj sztangę podchwytem, " +
+                    "dłonie skierowane do góry, i unosząc ją ku górze, wykorzystaj mięśnie bicepasa. Opuszczaj sztangę z kontrolą. " +
+                    "Ćwiczenie to koncentruje się na mięśniach bicepsa, pomagając rozwijać ich definicję i siłę.",
                     BodyPart = "Biceps"
                 },
-                  new Exercise()
-                  {
-                      ExerciseId = 6,
-                      ExerciseName = "Swiss ball plank",
-                      Description = "The Swiss ball plank is an effective core exercise. Start in a plank position with your forearms on a Swiss ball and toes on the ground. " +
-                    "Maintain a straight line from head to heels, engaging your core and stabilizing muscles. " +
-                    "This exercise helps improve core strength, stability, and balance.\"",
-                      BodyPart = "Core"
-
-                  },
+                new Exercise()
+                {
+                    ExerciseId = 6,
+                    ExerciseName = "Plank na piłce szwajcarskiej",
+                    Description = "Plank na piłce szwajcarskiej to efektywne ćwiczenie dla mięśni brzucha. Rozpocznij w pozycji plank na przedramionach, " +
+                    "piłka szwajcarska pod brzuchem, a palce stóp na podłodze. Utrzymuj prostą linię od głowy do pięt, angażując mięśnie brzucha i stabilizujące. " +
+                    "Ćwiczenie to pomaga poprawić siłę, stabilność i równowagę mięśni brzucha.",
+                    BodyPart = "Brzuch"
+                },
                 new Exercise()
                 {
                     ExerciseId = 7,
-                    ExerciseName = "Standing barbell calf raise",
-                    Description = "The standing barbell calf raise is a calf-strengthening exercise. Stand upright with a barbell resting on your upper back. " +
-                    "Rise onto your toes by pushing through the balls of your feet, " +
-                    "lifting your heels as high as possible. Lower your heels back down for a full range of motion. " +
-                    "This exercise targets the calf muscles, enhancing lower leg strength and definition.",
-                    BodyPart = "Calf"
+                    ExerciseName = "Podnoszenie pięt ze sztangą w staniu",
+                    Description = "Podnoszenie pięt ze sztangą w staniu to ćwiczenie wzmacniające łydki. Stań prosto, ze sztangą opierającą się na górnej części pleców." +
+                    " Wstawaj na palce poprzez unoszenie pięt i przesuwanie wagi ciała na przednią część stóp. Opuszczaj pięty z kontrolą, wykonując pełen zakres ruchu." +
+                    " Ćwiczenie to koncentruje się na mięśniach łydek, poprawiając ich siłę i wyrazistość.",
+                    BodyPart = "Łydki"
                 },
                 new Exercise()
                 {
                     ExerciseId = 8,
-                    ExerciseName = "Reverse lunges with barbell",
-                    Description = "Reverse lunges with a barbell are a lower body exercise. Hold a barbell on your upper back, step back with one leg into a lunge, " +
-                    "lowering your back knee toward the ground." +
-                    " Push through your front heel to return to the standing position. This targets the quadriceps, hamstrings, and glutes, enhancing leg strength and stability.",
-                    BodyPart = "Quadriceps thighs "
+                    ExerciseName = "Wypady z sztangą nad plecami",
+                    Description = "Wypady z sztangą nad plecami to ćwiczenie dolnej partii ciała. Trzymając sztangę na górnej części pleców," +
+                    " cofnij się jedną nogą do wypadu, obniżając kolano tylnej nogi w kierunku podłoża. Napnij przednią nogę, aby wrócić do pozycji wyjściowej. " +
+                    "Ćwiczenie to angażuje mięśnie czworogłowe uda, mięśnie dwugłowe uda i pośladki, poprawiając siłę i stabilność nóg.",
+                    BodyPart = "Czworogłowe uda"
                 },
                 new Exercise()
                 {
                     ExerciseId = 9,
-                    ExerciseName = "Elevated deadlift",
-                    Description = "The elevated deadlift is a weightlifting exercise that involves lifting a barbell from an elevated platform. " +
-                    "Stand on weight plates or blocks, grasp the barbell with an overhand grip, and lift by extending your hips and knees. Lower the barbell back down with control. " +
-                    "This exercise targets the hamstrings, glutes, lower back, and core, promoting overall strength and muscle development.",
-                    BodyPart = "Lower back"
+                    ExerciseName = "Martwy ciąg na podwyższeniu",
+                    Description = "Martwy ciąg na podwyższeniu to ćwiczenie z ciężarami, polegające na podnoszeniu sztangi z podwyższenia. " +
+                    "Stań na podkładkach lub blokach, chwytając sztangę podchwytem, i unosząc ją poprzez wyprostowanie bioder i kolan. " +
+                    "Opuszczaj sztangę z kontrolą. Ćwiczenie to angażuje mięśnie dwugłowe uda, pośladki, dolny odcinek pleców i mięśnie brzucha, " +
+                    "wspierając ogólną siłę i rozwój mięśniowy.",
+                    BodyPart = "Dolny odcinek pleców"
                 },
                 new Exercise()
                 {
                     ExerciseId = 10,
-                    ExerciseName = "Dumbbell supinated biceps curls",
-                    Description = "Dumbbell supinated biceps curls are a biceps-strengthening exercise. Hold dumbbells with palms facing up (supinated grip) and curl them upward while contracting your biceps. " +
-                    "Lower the dumbbells with control. This exercise effectively isolates and builds the biceps muscles, enhancing arm strength and definition.",
+                    ExerciseName = "Uginanie ramion z hantlami w supinacji",
+                    Description = "Uginanie ramion z hantlami w supinacji to ćwiczenie wzmacniające mięśnie bicepsa. " +
+                    "Trzymaj hantle w dłoniach ze zwiniętymi do góry dłońmi (supinacja) i unieś je ku górze, skręcając bicepsy." +
+                    " Opuszczaj hantle z kontrolą. Ćwiczenie to efektywnie izoluje i rozwija mięśnie bicepsa, poprawiając siłę i definicję ramion.",
                     BodyPart = "Biceps"
                 });
+
+
+
+            modelBuilder.Entity<ProductCategory>().HasData(
+                new ProductCategory()
+                {
+                    ProductCategoryId = 1,
+                    ProductCategoryName = "Owoce"
+                },
+                new ProductCategory() 
+                {
+                    ProductCategoryId = 2, 
+                    ProductCategoryName = "Warzywa"
+                },
+                new ProductCategory() 
+                { ProductCategoryId = 3, 
+                  ProductCategoryName = "Mięso" 
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 4,
+                    ProductCategoryName = "Nabiał"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 5,
+                    ProductCategoryName = "Pieczywo"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 6,
+                    ProductCategoryName = "Produkty zbożowe"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 7,
+                    ProductCategoryName = "Ryby i owoce morza"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 8,
+                    ProductCategoryName = "Słodycze"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 9,
+                    ProductCategoryName = "Napoje"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 10,
+                    ProductCategoryName = "Sosy i przyprawy"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 11,
+                    ProductCategoryName = "Przekąski"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 12,
+                    ProductCategoryName = "Zupy"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 13,
+                    ProductCategoryName = "Napoje alkoholowe"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 14,
+                    ProductCategoryName = "Produkty bezglutenowe"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId = 15,
+                    ProductCategoryName = "Kawy i herbaty"
+                },
+                new ProductCategory()
+                {
+                    ProductCategoryId= 16,
+                    ProductCategoryName = "Inne"
+                });
+
         }
         
         

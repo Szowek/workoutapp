@@ -55,15 +55,9 @@ namespace workoutapp.Migrations
                     b.Property<int>("CalendarId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("WorkoutDayId")
-                        .HasColumnType("integer");
-
                     b.HasKey("CalendarDayId");
 
                     b.HasIndex("CalendarId");
-
-                    b.HasIndex("WorkoutDayId")
-                        .IsUnique();
 
                     b.ToTable("CalendarDays");
                 });
@@ -102,73 +96,98 @@ namespace workoutapp.Migrations
                         new
                         {
                             ExerciseId = 1,
-                            BodyPart = "Shoulders",
-                            Description = "Pull-ups are a bodyweight exercise where you grip an overhead bar with palms facing away. By pulling your body upward, you target your upper back muscles, especially the latissimus dorsi. This exercise also engages your biceps and core, providing a well-rounded upper body workout.",
-                            ExerciseName = "Pull ups"
+                            BodyPart = "Plecy",
+                            Description = "Podciąganie na drążku to ćwiczenie wykonywane przy użyciu wagi ciała, polegające na chwyceniu drążka nad głową, dłonie skierowane na zewnątrz. Poprzez unoszenie ciała ku górze skupiasz się na mięśniach górnej części pleców, szczególnie na mięśniu czworobocznym. Ćwiczenie to również angażuje bicepsy i mięśnie brzucha, zapewniając wszechstronny trening górnej części ciała.",
+                            ExerciseName = "Podciąganie na drążku"
                         },
                         new
                         {
                             ExerciseId = 2,
-                            BodyPart = "Chest",
-                            Description = "Pin bench press is a weightlifting move. Barbell starts on safety pins, adding dead-stop challenge. Lift and press for chest, triceps, and shoulder strength. Targets bench press weak points.",
-                            ExerciseName = "Pin bench press"
+                            BodyPart = "Klatka piersiowa",
+                            Description = "Wyciskanie sztangi to ruch wykonywany przy użyciu ciężarów. Sztanga startuje na kołkach bezpieczeństwa, co dodaje wyzwań związanych z bezruchem. Unoszenie i wyciskanie wzmacnia mięśnie klatki piersiowej, tricepsów i ramion. Ćwiczenie to koncentruje się na osłabionych punktach w wyciskaniu sztangi.",
+                            ExerciseName = "Wyciskanie sztangi"
                         },
                         new
                         {
                             ExerciseId = 3,
-                            BodyPart = "Shoulders",
-                            Description = "Face pull is an exercise using a cable machine and rope attachment. Pull the rope towards your face, keeping elbows high, to work rear deltoids and upper back. Enhances shoulder stability and posture.",
-                            ExerciseName = "Face pull"
+                            BodyPart = "Barki",
+                            Description = "Podciąganie liny do twarzy to ćwiczenie wykonywane przy użyciu maszyny z linką i końcówką w kształcie liny. Pociągnij linkę w kierunku twarzy, trzymając łokcie wysoko, aby zaangażować mięśnie naramienne tyłowe oraz górną część pleców. Ćwiczenie to poprawia stabilność ramion i postawę ciała.",
+                            ExerciseName = "Podciąganie liny do twarzy"
                         },
                         new
                         {
                             ExerciseId = 4,
-                            BodyPart = "Triceps",
-                            Description = "Skull Crusher Pullover combines two exercises. Begin with a weightlifting barbell, lower it to your forehead (skull crusher), then move it over and behind your head (pullover). This engages triceps, chest, and lats for a comprehensive upper body workout.",
-                            ExerciseName = "Skull crusher pullover"
+                            BodyPart = "Mięsień trójgłowy ramienia",
+                            Description = "Połączenie ćwiczeń Skull Crusher i Pullover. Zacznij od wyciągnięcia sztangi na wyciskanie nad czoło (skull crusher), a następnie przenieś ją nad głowę (pullover). Zaangażowana zostaje trójgłowa część ramienia, klatka piersiowa i mięśnie pleców, zapewniając kompleksowy trening górnej części ciała.",
+                            ExerciseName = "Skull crusher i pullover"
                         },
                         new
                         {
                             ExerciseId = 5,
                             BodyPart = "Biceps",
-                            Description = "Barbell biceps curl is a classic exercise for building arm strength. Hold a barbell with an underhand grip, palms facing up, and curl it upward using your biceps. Lower the barbell with control. This targets the biceps muscles, helping to develop arm definition and strength.",
-                            ExerciseName = "Barbell biceps curl"
+                            Description = "Uginanie ramion ze sztangą to klasyczne ćwiczenie wzmacniające mięśnie ramion. Trzymaj sztangę podchwytem, dłonie skierowane do góry, i unosząc ją ku górze, wykorzystaj mięśnie bicepasa. Opuszczaj sztangę z kontrolą. Ćwiczenie to koncentruje się na mięśniach bicepsa, pomagając rozwijać ich definicję i siłę.",
+                            ExerciseName = "Uginanie ramion ze sztangą"
                         },
                         new
                         {
                             ExerciseId = 6,
-                            BodyPart = "Core",
-                            Description = "The Swiss ball plank is an effective core exercise. Start in a plank position with your forearms on a Swiss ball and toes on the ground. Maintain a straight line from head to heels, engaging your core and stabilizing muscles. This exercise helps improve core strength, stability, and balance.\"",
-                            ExerciseName = "Swiss ball plank"
+                            BodyPart = "Brzuch",
+                            Description = "Plank na piłce szwajcarskiej to efektywne ćwiczenie dla mięśni brzucha. Rozpocznij w pozycji plank na przedramionach, piłka szwajcarska pod brzuchem, a palce stóp na podłodze. Utrzymuj prostą linię od głowy do pięt, angażując mięśnie brzucha i stabilizujące. Ćwiczenie to pomaga poprawić siłę, stabilność i równowagę mięśni brzucha.",
+                            ExerciseName = "Plank na piłce szwajcarskiej"
                         },
                         new
                         {
                             ExerciseId = 7,
-                            BodyPart = "Calf",
-                            Description = "The standing barbell calf raise is a calf-strengthening exercise. Stand upright with a barbell resting on your upper back. Rise onto your toes by pushing through the balls of your feet, lifting your heels as high as possible. Lower your heels back down for a full range of motion. This exercise targets the calf muscles, enhancing lower leg strength and definition.",
-                            ExerciseName = "Standing barbell calf raise"
+                            BodyPart = "Łydki",
+                            Description = "Podnoszenie pięt ze sztangą w staniu to ćwiczenie wzmacniające łydki. Stań prosto, ze sztangą opierającą się na górnej części pleców. Wstawaj na palce poprzez unoszenie pięt i przesuwanie wagi ciała na przednią część stóp. Opuszczaj pięty z kontrolą, wykonując pełen zakres ruchu. Ćwiczenie to koncentruje się na mięśniach łydek, poprawiając ich siłę i wyrazistość.",
+                            ExerciseName = "Podnoszenie pięt ze sztangą w staniu"
                         },
                         new
                         {
                             ExerciseId = 8,
-                            BodyPart = "Quadriceps thighs ",
-                            Description = "Reverse lunges with a barbell are a lower body exercise. Hold a barbell on your upper back, step back with one leg into a lunge, lowering your back knee toward the ground. Push through your front heel to return to the standing position. This targets the quadriceps, hamstrings, and glutes, enhancing leg strength and stability.",
-                            ExerciseName = "Reverse lunges with barbell"
+                            BodyPart = "Czworogłowe uda",
+                            Description = "Wypady z sztangą nad plecami to ćwiczenie dolnej partii ciała. Trzymając sztangę na górnej części pleców, cofnij się jedną nogą do wypadu, obniżając kolano tylnej nogi w kierunku podłoża. Napnij przednią nogę, aby wrócić do pozycji wyjściowej. Ćwiczenie to angażuje mięśnie czworogłowe uda, mięśnie dwugłowe uda i pośladki, poprawiając siłę i stabilność nóg.",
+                            ExerciseName = "Wypady z sztangą nad plecami"
                         },
                         new
                         {
                             ExerciseId = 9,
-                            BodyPart = "Lower back",
-                            Description = "The elevated deadlift is a weightlifting exercise that involves lifting a barbell from an elevated platform. Stand on weight plates or blocks, grasp the barbell with an overhand grip, and lift by extending your hips and knees. Lower the barbell back down with control. This exercise targets the hamstrings, glutes, lower back, and core, promoting overall strength and muscle development.",
-                            ExerciseName = "Elevated deadlift"
+                            BodyPart = "Dolny odcinek pleców",
+                            Description = "Martwy ciąg na podwyższeniu to ćwiczenie z ciężarami, polegające na podnoszeniu sztangi z podwyższenia. Stań na podkładkach lub blokach, chwytając sztangę podchwytem, i unosząc ją poprzez wyprostowanie bioder i kolan. Opuszczaj sztangę z kontrolą. Ćwiczenie to angażuje mięśnie dwugłowe uda, pośladki, dolny odcinek pleców i mięśnie brzucha, wspierając ogólną siłę i rozwój mięśniowy.",
+                            ExerciseName = "Martwy ciąg na podwyższeniu"
                         },
                         new
                         {
                             ExerciseId = 10,
                             BodyPart = "Biceps",
-                            Description = "Dumbbell supinated biceps curls are a biceps-strengthening exercise. Hold dumbbells with palms facing up (supinated grip) and curl them upward while contracting your biceps. Lower the dumbbells with control. This exercise effectively isolates and builds the biceps muscles, enhancing arm strength and definition.",
-                            ExerciseName = "Dumbbell supinated biceps curls"
+                            Description = "Uginanie ramion z hantlami w supinacji to ćwiczenie wzmacniające mięśnie bicepsa. Trzymaj hantle w dłoniach ze zwiniętymi do góry dłońmi (supinacja) i unieś je ku górze, skręcając bicepsy. Opuszczaj hantle z kontrolą. Ćwiczenie to efektywnie izoluje i rozwija mięśnie bicepsa, poprawiając siłę i definicję ramion.",
+                            ExerciseName = "Uginanie ramion z hantlami w supinacji"
                         });
+                });
+
+            modelBuilder.Entity("workoutapp.Models.Meal", b =>
+                {
+                    b.Property<int>("MealId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MealId"));
+
+                    b.Property<int>("CalendarDayId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("MealName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TotalKcal")
+                        .HasColumnType("integer");
+
+                    b.HasKey("MealId");
+
+                    b.HasIndex("CalendarDayId");
+
+                    b.ToTable("Meals");
                 });
 
             modelBuilder.Entity("workoutapp.Models.Note", b =>
@@ -197,6 +216,139 @@ namespace workoutapp.Migrations
                     b.HasIndex("WorkoutPlanId");
 
                     b.ToTable("Notes");
+                });
+
+            modelBuilder.Entity("workoutapp.Models.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProductId"));
+
+                    b.Property<int>("MealId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ProductCategoryId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ProductCategoryName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ProductKcal")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ProductName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ProductId");
+
+                    b.HasIndex("MealId");
+
+                    b.HasIndex("ProductCategoryId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("workoutapp.Models.ProductCategory", b =>
+                {
+                    b.Property<int>("ProductCategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProductCategoryId"));
+
+                    b.Property<string>("ProductCategoryName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("ProductCategoryId");
+
+                    b.ToTable("ProductCategories");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductCategoryId = 1,
+                            ProductCategoryName = "Owoce"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 2,
+                            ProductCategoryName = "Warzywa"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 3,
+                            ProductCategoryName = "Mięso"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 4,
+                            ProductCategoryName = "Nabiał"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 5,
+                            ProductCategoryName = "Pieczywo"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 6,
+                            ProductCategoryName = "Produkty zbożowe"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 7,
+                            ProductCategoryName = "Ryby i owoce morza"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 8,
+                            ProductCategoryName = "Słodycze"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 9,
+                            ProductCategoryName = "Napoje"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 10,
+                            ProductCategoryName = "Sosy i przyprawy"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 11,
+                            ProductCategoryName = "Przekąski"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 12,
+                            ProductCategoryName = "Zupy"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 13,
+                            ProductCategoryName = "Napoje alkoholowe"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 14,
+                            ProductCategoryName = "Produkty bezglutenowe"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 15,
+                            ProductCategoryName = "Kawy i herbaty"
+                        },
+                        new
+                        {
+                            ProductCategoryId = 16,
+                            ProductCategoryName = "Inne"
+                        });
                 });
 
             modelBuilder.Entity("workoutapp.Models.User", b =>
@@ -247,9 +399,11 @@ namespace workoutapp.Migrations
                         .HasColumnType("text");
 
                     b.Property<int?>("NumberOfRepeats")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int?>("NumberOfSeries")
+                        .IsRequired()
                         .HasColumnType("integer");
 
                     b.Property<int>("WorkoutDayId")
@@ -274,10 +428,16 @@ namespace workoutapp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("CalendarDayId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("WorkoutPlanId")
                         .HasColumnType("integer");
 
                     b.HasKey("WorkoutDayId");
+
+                    b.HasIndex("CalendarDayId")
+                        .IsUnique();
 
                     b.HasIndex("WorkoutPlanId");
 
@@ -293,6 +453,7 @@ namespace workoutapp.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("WorkoutPlanId"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("UserId")
@@ -327,15 +488,18 @@ namespace workoutapp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("workoutapp.Models.WorkoutDay", "WorkoutDay")
-                        .WithOne("CalendarDay")
-                        .HasForeignKey("workoutapp.Models.CalendarDay", "WorkoutDayId")
+                    b.Navigation("Calendar");
+                });
+
+            modelBuilder.Entity("workoutapp.Models.Meal", b =>
+                {
+                    b.HasOne("workoutapp.Models.CalendarDay", "CalendarDay")
+                        .WithMany("Meals")
+                        .HasForeignKey("CalendarDayId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Calendar");
-
-                    b.Navigation("WorkoutDay");
+                    b.Navigation("CalendarDay");
                 });
 
             modelBuilder.Entity("workoutapp.Models.Note", b =>
@@ -347,6 +511,25 @@ namespace workoutapp.Migrations
                         .IsRequired();
 
                     b.Navigation("WorkoutPlan");
+                });
+
+            modelBuilder.Entity("workoutapp.Models.Product", b =>
+                {
+                    b.HasOne("workoutapp.Models.Meal", "Meal")
+                        .WithMany("Products")
+                        .HasForeignKey("MealId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("workoutapp.Models.ProductCategory", "ProductCategory")
+                        .WithMany()
+                        .HasForeignKey("ProductCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Meal");
+
+                    b.Navigation("ProductCategory");
                 });
 
             modelBuilder.Entity("workoutapp.Models.UserExercise", b =>
@@ -362,11 +545,19 @@ namespace workoutapp.Migrations
 
             modelBuilder.Entity("workoutapp.Models.WorkoutDay", b =>
                 {
+                    b.HasOne("workoutapp.Models.CalendarDay", "CalendarDay")
+                        .WithOne("WorkoutDay")
+                        .HasForeignKey("workoutapp.Models.WorkoutDay", "CalendarDayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("workoutapp.Models.WorkoutPlan", "WorkoutPlan")
                         .WithMany("WorkoutDays")
                         .HasForeignKey("WorkoutPlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CalendarDay");
 
                     b.Navigation("WorkoutPlan");
                 });
@@ -387,6 +578,19 @@ namespace workoutapp.Migrations
                     b.Navigation("CalendarDays");
                 });
 
+            modelBuilder.Entity("workoutapp.Models.CalendarDay", b =>
+                {
+                    b.Navigation("Meals");
+
+                    b.Navigation("WorkoutDay")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("workoutapp.Models.Meal", b =>
+                {
+                    b.Navigation("Products");
+                });
+
             modelBuilder.Entity("workoutapp.Models.User", b =>
                 {
                     b.Navigation("Calendars");
@@ -396,9 +600,6 @@ namespace workoutapp.Migrations
 
             modelBuilder.Entity("workoutapp.Models.WorkoutDay", b =>
                 {
-                    b.Navigation("CalendarDay")
-                        .IsRequired();
-
                     b.Navigation("UserExercises");
                 });
 
