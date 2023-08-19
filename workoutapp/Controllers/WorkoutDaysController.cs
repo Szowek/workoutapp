@@ -69,10 +69,15 @@ namespace workoutapp.Controllers
 
             var date = newWorkoutDay.CalendarDate;
 
-            var existingWorkoutDay = workoutPlan.WorkoutDays.FirstOrDefault(wd => wd.CalendarDate == date);
+            //var existingWorkoutDay = workoutPlan.WorkoutDays.FirstOrDefault(wd => wd.CalendarDate == date);
+
+            var existingWorkoutDay = await _context.WorkoutDays
+                .Where(wd => wd.WorkoutPlan.UserId == userId && wd.CalendarDate == date)
+                .FirstOrDefaultAsync();
+
             if(existingWorkoutDay != null) 
             {
-                return BadRequest("Dzien o tej dacie juz istnieje");
+                return BadRequest("Dzien o tej dacie juz istnieje w twoich WorkoutPlanach");
             }
 
 

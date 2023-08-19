@@ -64,11 +64,15 @@ namespace workoutapp.Controllers
             newCalendarDay.CalendarId = calendarId;
 
             var date = newCalendarDay.CalendarDate;
-                
-            var existingCalendarDay =  calendar.CalendarDays.FirstOrDefault(c => c.CalendarDate == date);
+
+            var existingCalendarDay = await _context.CalendarDays
+              .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date)
+              .FirstOrDefaultAsync();
+
+           // var existingCalendarDay =  calendar.CalendarDays.FirstOrDefault(c => c.CalendarDate == date);
             if (existingCalendarDay != null)
             {
-                return BadRequest("Ta data juz istnieje w tym kalendarzu");
+                return BadRequest("Ta data juz istnieje w twoich kalendarzach");
             }
 
             _context.CalendarDays.Add(newCalendarDay);
