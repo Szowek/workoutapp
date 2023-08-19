@@ -144,7 +144,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (meal.MealId != mealId)
+            if (meal.CalendarDayId != calendarDayId)
             {
                 return Forbid();
             }
@@ -202,7 +202,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (calendarDay.CalendarDayId != calendarDayId)
+            if (calendarDay.CalendarId != calendarId)
             {
                 return Forbid();
             }
@@ -276,7 +276,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (meal.MealId != mealId)
+            if (meal.CalendarDayId != calendarDayId)
             {
                 return Forbid();
             }
@@ -286,6 +286,87 @@ namespace workoutapp.Controllers
             return Ok(mealDto);
 
         }
+
+
+
+        [HttpPut("{mealId}/edit")]
+        public async Task<IActionResult> GetMealById([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] int calendarDayId, [FromRoute] int mealId,
+            [FromBody] UpdateMealNameDto dto)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.UserId != loggeduserID)
+            {
+                return Forbid();
+            }
+
+            var calendar = _context
+                .Calendars
+                .Include(c => c.CalendarDays)
+                .FirstOrDefault(c => c.CalendarId == calendarId);
+
+            if (calendar == null)
+            {
+                return NotFound();
+            }
+
+            if (calendar.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var calendarDay = _context
+                .CalendarDays
+                .Include(c => c.Meals)
+                .Include(c => c.WorkoutDay)
+                .FirstOrDefault(c => c.CalendarDayId == calendarDayId);
+
+            if (calendarDay == null)
+            {
+                return NotFound();
+            }
+
+            if (calendarDay.CalendarId != calendarId)
+            {
+                return Forbid();
+            }
+
+            var meal = _context
+                .Meals
+                .Include(c => c.CalendarDay)
+                .Include(m => m.Products)
+                .FirstOrDefault(c => c.CalendarDayId == calendarDayId);
+
+            if (meal == null)
+            {
+                return NotFound();
+            }
+
+            if (meal.CalendarDayId != calendarDayId)
+            {
+                return Forbid();
+            }
+
+            meal.MealName = dto.MealName;
+
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+
+
 
         [HttpGet("GetAll")]
         [AllowAnonymous]

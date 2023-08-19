@@ -171,13 +171,11 @@ namespace workoutapp.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetAllCalendars()
         {
-            var calendars = _context.WorkoutPlans
+            var calendars = _context.Calendars
                 .Include(u => u.User)
                 .ToList();
 
-            var calendarsDtos = _mapper.Map<List<CalendarDto>>(calendars);
-
-            return Ok(calendarsDtos);
+            return Ok(calendars);
         }
 
     }

@@ -196,7 +196,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (product.ProductId != productId)
+            if (product.MealId != mealId)
             {
                 return Forbid();
             }
@@ -358,7 +358,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (product.ProductId != productId)
+            if (product.MealId != mealId)
             {
                 return Forbid();
             }

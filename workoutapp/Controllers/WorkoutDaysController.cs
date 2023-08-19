@@ -145,7 +145,7 @@ namespace workoutapp.Controllers
                     return NotFound();
                 }
 
-                if(workoutDay.WorkoutDayId != workoutDayId)            
+                if(workoutDay.WorkoutPlanId != workoutPlanId)            
                 {
                    return Forbid();
                 }
@@ -191,11 +191,6 @@ namespace workoutapp.Controllers
             }
 
             if (workoutPlan.User.UserId != loggeduserID)
-            {
-                return Forbid();
-            }
-
-            if(workoutPlan.WorkoutPlanId != workoutPlanId) 
             {
                 return Forbid();
             }
@@ -256,7 +251,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (workoutDay.WorkoutDayId != workoutDayId)
+            if (workoutDay.WorkoutPlanId != workoutPlanId)
             {
                 return Forbid();
             }

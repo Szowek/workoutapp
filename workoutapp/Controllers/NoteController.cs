@@ -114,7 +114,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (note.NoteId != noteId)
+            if (note.WorkoutPlanId != workoutPlanId)
             {
                 return Forbid();
             }
@@ -132,10 +132,6 @@ namespace workoutapp.Controllers
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
-            var workoutPlan = await _context.WorkoutPlans
-           .Include(wp => wp.User)
-           .Include(wp => wp.Notes)
-           .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
 
             var user = _context
                 .Users
@@ -151,6 +147,11 @@ namespace workoutapp.Controllers
             {
                 return Forbid();
             }
+
+            var workoutPlan = await _context.WorkoutPlans
+            .Include(wp => wp.User)
+            .Include(wp => wp.Notes)
+            .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
 
             if (workoutPlan == null)
             {
@@ -214,7 +215,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (note.NoteId != noteId)
+            if (note.WorkoutPlanId != workoutPlanId)
             {
                 return Forbid();
             }
@@ -255,7 +256,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (workoutPlan.User.UserId != userId)
+            if (workoutPlan.UserId != userId)
             {
                 return Forbid();
             }
@@ -268,7 +269,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (note.NoteId != noteId)
+            if (note.WorkoutPlanId != workoutPlanId)
             {
                 return Forbid();
             }

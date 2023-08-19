@@ -122,7 +122,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (calendarDay.CalendarDayId != calendarId)
+            if (calendarDay.CalendarId != calendarId)
             {
                 return Forbid();
             }
@@ -177,7 +177,7 @@ namespace workoutapp.Controllers
         }
 
         [HttpGet("{calendarDayId}")]
-        public async Task<IActionResult> GetCalendarById([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] int calendarDayId)
+        public async Task<IActionResult> GetCalendarDayById([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] int calendarDayId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
@@ -223,7 +223,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (calendarDay.CalendarDayId != calendarDayId)
+            if (calendarDay.CalendarId != calendarId)
             {
                 return Forbid();
             }
@@ -238,7 +238,7 @@ namespace workoutapp.Controllers
 
         [HttpGet("GetAll")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetAllWorkoutDays()
+        public async Task<IActionResult> GetAllCalendarDays()
         {
             var calendarDays = _context.CalendarDays
                 .Include(c => c.Calendar)

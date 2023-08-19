@@ -7,6 +7,8 @@ namespace workoutapp.Models
         public int MealId { get; set; }
 
         [Required]
+        [MaxLength(50)]
+        [MinLength(1)]
         public string MealName { get; set; }
 
         public int TotalKcal { get; set; } = 0;

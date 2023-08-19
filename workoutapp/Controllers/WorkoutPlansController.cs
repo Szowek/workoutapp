@@ -93,7 +93,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if(workoutPlan.WorkoutPlanId != workoutPlanId) 
+            if(workoutPlan.UserId != userId) 
             {
                 return Forbid();
             }
@@ -168,7 +168,7 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (workoutPlan.WorkoutPlanId != workoutPlanId)
+            if (workoutPlan.UserId != userId)
             {
                 return Forbid();
             }
@@ -178,6 +178,51 @@ namespace workoutapp.Controllers
             return Ok(workoutPlanDto);
 
         }
+
+        [HttpPut("{workoutPlanId}/edit")]
+        public async Task<IActionResult> EditWorkoutPlan([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromBody] UpdateWorkoutPlanDto dto)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var workoutPlan = await _context.WorkoutPlans
+            .Include(wp => wp.User)
+            .FirstOrDefaultAsync(wp => wp.WorkoutPlanId== workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            workoutPlan.isPreferred = dto.isPreferred;
+
+            _context.SaveChanges();
+
+            return Ok();
+
+
+        }
+
+
 
 
         // Metoda zwracająca wszystkie WorkoutPlany wszystkich uzytkownikow 

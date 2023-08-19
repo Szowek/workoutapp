@@ -178,7 +178,8 @@ namespace workoutapp.Migrations
 
                     b.Property<string>("MealName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("TotalKcal")
                         .HasColumnType("integer");
