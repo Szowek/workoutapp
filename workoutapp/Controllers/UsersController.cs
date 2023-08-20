@@ -70,46 +70,82 @@ namespace workoutapp.Controllers
         }
 
 
-        [HttpPut("{id}/change")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserDto dto)
+
+
+
+
+        [HttpPut("{id}/change/email")]
+        public async Task<IActionResult> UpdateEmail([FromRoute] int id, [FromBody] UpdateUserEmailDto dto)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
             var user = _context
                 .Users
                 .FirstOrDefault(u => u.UserId == id);
-
             if(user == null)
             {
-                return NotFound();
+                return NotFound("brak uzytkownika");
             }
 
             if (loggeduserID != user.UserId)
             {
-                return Forbid();
+                return Forbid("blad id");
             }
 
-
-            user.Email = dto.Email;
-            var existingEmail = _context.Users.FirstOrDefault(u => u.Email == user.Email);
-            //sprawdzenie czy uzytkownik o podanym emailu juz istnieje
-            if (existingEmail != null)
+           
+            if(!string.IsNullOrWhiteSpace(dto.Email))
             {
-              return BadRequest("Uzytkownik o podanym adresie email juz istnieje.");
+                var existingEmail = _context.Users.FirstOrDefault(u => u.Email == dto.Email);
+                //sprawdzenie czy uzytkownik o podanym emailu juz istnieje
+                if (existingEmail != null)
+                {
+                    return BadRequest("Uzytkownik o podanym adresie email juz istnieje.");
+                }
+                user.Email = dto.Email;
             }
-
-            user.Password = dto.Password;
-            if (user.Password.Length < 3)
+            else
             {
-              return BadRequest("Haslo musi zawierac co najmniej 3 znaki.");
+                return BadRequest("pusty email");
             }
-
-            //walidacja hasla
-            user.Password = Password.hashPassword(user.Password);
-            
 
             _context.SaveChanges();
+            return Ok();
 
+        }
+
+        [HttpPut("{id}/change/password")]
+        public async Task<IActionResult> UpdatePassword([FromRoute] int id, [FromBody] UpdateUserPasswordDto dto)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .FirstOrDefault(u => u.UserId == id);
+            if (user == null)
+            {
+                return NotFound("brak uzytkownika");
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid("blad id");
+            }
+
+
+            if (!string.IsNullOrWhiteSpace(dto.Password))
+            {
+                if (dto.Password.Length < 3)
+                {
+                    return BadRequest("haslo za krotkie");
+                }
+                user.Password = Password.hashPassword(dto.Password);
+            }
+            else
+            {
+                return BadRequest("puste haslo");
+            }
+
+            _context.SaveChanges();
             return Ok();
 
         }
@@ -141,7 +177,7 @@ namespace workoutapp.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet("logged")]
         public async Task<IActionResult> getloggedInUser()
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));

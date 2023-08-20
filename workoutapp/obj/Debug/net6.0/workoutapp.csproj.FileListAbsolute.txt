@@ -386,3 +386,15 @@ C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Microsoft.AspNet
 C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.dll
 C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
 C:\Users\Kamil\Source\Repos\workout\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.Schema.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\AutoMapper.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Microsoft.AspNetCore.JsonPatch.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.Bson.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Newtonsoft.Json.Schema.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\bin\Debug\net6.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\pkord\Source\Repos\Szowek\workoutapp\workoutapp\obj\Debug\net6.0\workoutapp.MvcApplicationPartsAssemblyInfo.cs
