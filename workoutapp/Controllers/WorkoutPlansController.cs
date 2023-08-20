@@ -57,7 +57,7 @@ namespace workoutapp.Controllers
             //return Ok("Stworzyles WorkoutPlan");
 
             var workoutplanId = newWorkoutPlan.WorkoutPlanId;
-            return Created($"/api{userId}/workoutplans/{workoutplanId}", null);
+            return Created($"/api/{userId}/workoutplans/{workoutplanId}", null);
 
         }
 
@@ -132,6 +132,33 @@ namespace workoutapp.Controllers
 
             return Ok(workoutplansDtos);
            
+        }
+
+        // Metoda zwracająca ilość WorkoutPlanów danego użytkownika
+        [HttpGet("count")]
+        public async Task<ActionResult> CountPlans([FromRoute] int userId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.UserId != loggeduserID)
+            {
+                return Forbid();
+            }
+
+            int count = _context.WorkoutPlans.Count(wp => wp.UserId == userId);
+
+            return Ok(count);
         }
         
 
