@@ -82,6 +82,9 @@ namespace workoutapp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("NumberOfLoad")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("NumberOfRepeats")
                         .HasColumnType("integer");
 
@@ -398,6 +401,9 @@ namespace workoutapp.Migrations
                     b.Property<string>("ExerciseName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int?>("NumberOfLoad")
+                        .HasColumnType("integer");
 
                     b.Property<int?>("NumberOfRepeats")
                         .IsRequired()

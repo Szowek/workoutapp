@@ -279,15 +279,21 @@ namespace workoutapp.Controllers
 
 
             exercise.NumberOfSeries = dto.NumberOfSeries; 
-            if (exercise.NumberOfSeries < 1)
+            if (exercise.NumberOfSeries <= 1)
             {
                 return BadRequest("Licza serii musi wynosic przynajmniej 1");
             }
 
            exercise.NumberOfRepeats = dto.NumberOfRepeats; 
-            if (exercise.NumberOfRepeats < 1)
+            if (exercise.NumberOfRepeats <= 1)
             {
                 return BadRequest("Licza powtorzen musi wynosic przynajmniej 1");
+            }
+
+            exercise.NumberOfLoad = dto.NumberOfLoad;
+            if(exercise.NumberOfLoad <= 0)
+            {
+                return BadRequest("Obciazenie musi wynosic przynajmniej 0");
             }
 
             _context.SaveChanges();
@@ -405,22 +411,32 @@ namespace workoutapp.Controllers
                 ExerciseName = exerciseToAdd.ExerciseName,
                 Description = exerciseToAdd.Description,
                 BodyPart = exerciseToAdd.BodyPart,
-                NumberOfSeries = exerciseToAdd.NumberOfSeries,
-                NumberOfRepeats = exerciseToAdd.NumberOfRepeats,
+                NumberOfSeries = 1,
+                NumberOfRepeats = 1,
+                NumberOfLoad = 0,
                 WorkoutDayId = workoutDayId
             };
 
             _context.UserExercises.Add(userExercise);
             _context.SaveChanges();
 
-            return Ok("Dodales cwiczenie");
+            return Ok(userExercise);
 
+        }
+
+        [HttpGet("getExercise/{exerciseId}")]
+        public async Task<IActionResult> GetExerciseById([FromRoute] int ExerciseId)
+        {
+            var exercise = _context
+                .Exercises
+                .FirstOrDefault(e => e.ExerciseId == ExerciseId);
+            return Ok(exercise);
         }
 
 
 
         [HttpGet("{userExerciseId}")]
-        public async Task<IActionResult> GetExerciseById([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int workoutDayId, [FromRoute] int userExerciseId)
+        public async Task<IActionResult> GetUserExerciseById([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int workoutDayId, [FromRoute] int userExerciseId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 

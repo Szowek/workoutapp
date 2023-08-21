@@ -19,6 +19,8 @@ namespace workoutapp.Models
         [Required]
         public int? NumberOfRepeats { get; set; }
 
+        public int? NumberOfLoad { get; set; }
+
         public int WorkoutDayId { get; set; }
 
         public virtual WorkoutDay WorkoutDay { get; set; }
