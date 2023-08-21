@@ -57,7 +57,7 @@ namespace workoutapp.Controllers
             //return Ok("Stworzyles WorkoutPlan");
 
             var workoutplanId = newWorkoutPlan.WorkoutPlanId;
-            return Created($"/api/{userId}/workoutplans/{workoutplanId}", null);
+            return new ObjectResult(workoutplanId);
 
         }
 

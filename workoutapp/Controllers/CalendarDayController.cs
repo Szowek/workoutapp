@@ -66,7 +66,7 @@ namespace workoutapp.Controllers
             var date = newCalendarDay.CalendarDate;
 
             var existingCalendarDay = await _context.CalendarDays
-              .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date)
+              .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date && cd.CalendarDate != "base")
               .FirstOrDefaultAsync();
 
            // var existingCalendarDay =  calendar.CalendarDays.FirstOrDefault(c => c.CalendarDate == date);
@@ -80,7 +80,7 @@ namespace workoutapp.Controllers
 
             var calendarDayId = newCalendarDay.CalendarDayId;
 
-            return Created($"/api{userId}/calendars/{calendarId}/calendardays/{calendarDayId}", null);
+            return new ObjectResult(calendarDayId);
 
         }
 

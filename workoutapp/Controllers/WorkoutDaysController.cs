@@ -72,7 +72,7 @@ namespace workoutapp.Controllers
             //var existingWorkoutDay = workoutPlan.WorkoutDays.FirstOrDefault(wd => wd.CalendarDate == date);
 
             var existingWorkoutDay = await _context.WorkoutDays
-                .Where(wd => wd.WorkoutPlan.UserId == userId && wd.CalendarDate == date)
+                .Where(wd => wd.WorkoutPlan.UserId == userId && wd.CalendarDate == date && wd.CalendarDate != "base")
                 .FirstOrDefaultAsync();
 
             if(existingWorkoutDay != null) 
@@ -100,7 +100,7 @@ namespace workoutapp.Controllers
          
 
             //return Ok("Stworzyles WorkoutDay");
-            return Created($"api/{userId}/workoutplans/{workoutPlanId}/workoutdays/{workoutdayId}", null);
+            return new ObjectResult(workoutdayId);
 
         }
 

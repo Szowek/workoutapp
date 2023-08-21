@@ -52,7 +52,7 @@ namespace workoutapp.Controllers
             _context.SaveChanges();
 
             var calendarId = newCalendar.CalendarId;
-            return Created($"/api{userId}/calendars/{calendarId}", null);
+            return new ObjectResult(calendarId);
 
         }
 
@@ -99,7 +99,7 @@ namespace workoutapp.Controllers
 
         }
 
-        [HttpGet]
+        [HttpGet("getAllUserCalendars")]
         public async Task<IActionResult> GetAllUserCalendars([FromRoute] int userId)
         {
             int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
@@ -123,6 +123,31 @@ namespace workoutapp.Controllers
 
             return Ok(calendarsDtos);
 
+        }
+
+        //getting calendar count
+        [HttpGet("count")]
+        public async Task<IActionResult> GetUserCalendarsCount([FromRoute] int userId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.Calendars)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.UserId != loggeduserID)
+            {
+                return Forbid();
+            }
+
+            var count = _context.Calendars.Count(c => c.UserId == userId);
+            return Ok(count);
         }
 
         [HttpGet("{calendarId}")]

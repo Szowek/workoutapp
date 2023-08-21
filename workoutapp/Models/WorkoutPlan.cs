@@ -10,6 +10,7 @@ namespace workoutapp.Models
         public string? Name { get; set; }
         public int UserId { get; set; }
 
+        public uint DaysCount { get; set; }
         public bool? isPreferred { get; set; } = false;
         
         public virtual User User { get; set; }
