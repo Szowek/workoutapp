@@ -9,5 +9,7 @@ namespace workoutapp.Dtos
         [Required]
         public string CalendarDate { get; set; }
 
+        public int CalendarDayId { get; set; }
+
     }
 }

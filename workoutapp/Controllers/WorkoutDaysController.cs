@@ -80,17 +80,28 @@ namespace workoutapp.Controllers
                 return BadRequest("Dzien o tej dacie juz istnieje w twoich WorkoutPlanach");
             }
 
-
-            var existingCalendarDay = await _context.CalendarDays
-              .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date)
-              .FirstOrDefaultAsync();
-
-            if (existingCalendarDay == null)
+            if (_context.CalendarDays.Count(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date) > 0)
             {
-                return BadRequest("Nie ma takiego utworzonego dnia");
+                var existingCalendarDay = await _context.CalendarDays
+                    .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDayId == newWorkoutDay.CalendarDayId)
+                    .FirstOrDefaultAsync();
+                if (existingCalendarDay == null)
+                {
+                    return BadRequest("Nie ma takiego utworzonego dnia");
+                }
+                newWorkoutDay.CalendarDayId = existingCalendarDay.CalendarDayId;
             }
-
-            newWorkoutDay.CalendarDayId = existingCalendarDay.CalendarDayId;
+            else
+            {
+                var existingCalendarDay = await _context.CalendarDays
+                  .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date)
+                  .FirstOrDefaultAsync();
+                if (existingCalendarDay == null)
+                {
+                    return BadRequest("Nie ma takiego utworzonego dnia");
+                }
+                newWorkoutDay.CalendarDayId = existingCalendarDay.CalendarDayId;
+            }
 
             _context.WorkoutDays.Add(newWorkoutDay);
             _context.SaveChanges();

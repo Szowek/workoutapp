@@ -305,6 +305,29 @@ namespace workoutapp.Controllers
         }
 
 
+        [HttpGet("getsamples/bodyparts")]
+        public async Task<IActionResult> GetBodyParts()
+        {
+            var bodyparts = _context
+                .Exercises
+                .Select(o => o.BodyPart)
+                .Distinct() 
+                .ToList();
+            return Ok(bodyparts);
+        }
+
+        [HttpGet("getsamples/bybodypart/{bodypart}")]
+        public async Task<IActionResult> GetExercisesByBodyPart([FromRoute] string bodypart )
+        {
+            var exercises = _context
+                .Exercises
+                .Where(o => o.BodyPart == bodypart)
+                .ToList();
+            return Ok(exercises);
+        }
+
+
+
         [HttpPost("getsamples/{exerciseId}")]
         public async Task<IActionResult> AddToUserExercises([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int workoutDayId, [FromRoute] int exerciseId)
         {
