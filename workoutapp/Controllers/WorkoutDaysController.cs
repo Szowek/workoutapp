@@ -205,15 +205,34 @@ namespace workoutapp.Controllers
             //finding wanted base day
             var baseWorkoutDay = _context
                 .WorkoutDays
+                .Include(bwd => bwd.UserExercises)
                 .FirstOrDefault(bwd => bwd.WorkoutDayId == baseDayId && bwd.CalendarDate == "base");
             if (baseWorkoutDay == null)
             {
                 return BadRequest("Nie ma takiego dnia bazowego");
             }
-          
+
             //using base workout day as a template to create new workout day
-            newWorkoutDay.UserExercises = baseWorkoutDay.UserExercises;
+
+
             _context.WorkoutDays.Add(newWorkoutDay);
+            _context.SaveChanges();
+
+            for (int i=0; i<baseWorkoutDay.UserExercises.Count; i++)
+            {
+                var userExercise = new UserExercise
+                {
+                    ExerciseName = baseWorkoutDay.UserExercises[i].ExerciseName,
+                    Description = baseWorkoutDay.UserExercises[i].Description,
+                    BodyPart = baseWorkoutDay.UserExercises[i].BodyPart,
+                    NumberOfSeries = baseWorkoutDay.UserExercises[i].NumberOfSeries,
+                    NumberOfRepeats = baseWorkoutDay.UserExercises[i].NumberOfRepeats,
+                    NumberOfLoad = baseWorkoutDay.UserExercises[i].NumberOfLoad,
+                    WorkoutDayId = newWorkoutDay.WorkoutDayId
+                };
+                _context.UserExercises.Add(userExercise);
+            }
+            
             _context.SaveChanges();
 
             var workoutdayId = newWorkoutDay.WorkoutDayId;
