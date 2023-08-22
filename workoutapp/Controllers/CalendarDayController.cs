@@ -23,6 +23,57 @@ namespace workoutapp.Controllers
             _mapper = mapper;
         }
 
+
+        [HttpGet("check/{date}")]
+        public async Task<IActionResult> CheckIfDateIsAvailable([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] string date)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var calendar = await _context
+            .Calendars
+            .FirstOrDefaultAsync(c => c.CalendarId == calendarId);
+
+            if (calendar == null)
+            {
+                return NotFound();
+            }
+
+            if (calendar.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var checker = await _context
+                .CalendarDays
+                .Where(cd => cd.CalendarId == calendar.CalendarId && cd.CalendarDate == date)
+                .FirstOrDefaultAsync();
+
+            if (checker == null)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
+
+        }
+
         [HttpGet("getByDate/{date}")]
         public async Task<IActionResult> GetCalendarDayId([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] string date)
         {

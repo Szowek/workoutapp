@@ -26,6 +26,56 @@ namespace workoutapp.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("checkIfAvailable/{date}")]
+        public async Task<IActionResult> CheckIfNewDayIsAvailable([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] string date)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+
+            var workoutPlan = await _context.WorkoutPlans
+            .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var possibleExistingWorkoutDay = await _context
+                .WorkoutDays
+                .Where(wd => wd.CalendarDate == date && wd.WorkoutPlanId == workoutPlanId)
+                .FirstOrDefaultAsync();
+
+            if(possibleExistingWorkoutDay == null)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
+        }
+
+
         [HttpGet("getBaseDays")]
         public async Task<IActionResult> GetBaseDays([FromRoute] int userId, [FromRoute] int workoutPlanId)
         {
