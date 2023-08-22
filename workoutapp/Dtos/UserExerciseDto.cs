@@ -18,5 +18,7 @@ namespace workoutapp.Dtos
         public int? NumberOfSeries { get; set; }
 
         public int? NumberOfRepeats { get; set; }
+
+        public int? NumberOfLoad { get; set; }
     }
 }
