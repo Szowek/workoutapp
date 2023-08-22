@@ -26,6 +26,203 @@ namespace workoutapp.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("getBaseDays")]
+        public async Task<IActionResult> GetBaseDays([FromRoute] int userId, [FromRoute] int workoutPlanId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+
+            var workoutPlan = await _context.WorkoutPlans
+            .Include(wp => wp.User)
+            .Include(wp => wp.WorkoutDays)
+            .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var baseWorkoutDays = _context
+                .WorkoutDays
+                .Include(wp => wp.UserExercises)
+                .Where(wp => wp.CalendarDate == "base" && wp.WorkoutPlanId == workoutPlan.WorkoutPlanId)
+                .ToList();
+            if(baseWorkoutDays.Count == 0 || baseWorkoutDays == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(baseWorkoutDays);
+        }
+
+
+        [HttpGet("checkBaseDays")]
+        public async Task<IActionResult> CheckForCompletedBaseDays([FromRoute] int userId, [FromRoute] int workoutPlanId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+
+            var workoutPlan = await _context.WorkoutPlans
+            .Include(wp => wp.User)
+            .Include(wp => wp.WorkoutDays)
+            .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var baseWorkoutDays = _context
+            .WorkoutDays
+            .Where(bwd => bwd.WorkoutPlanId == workoutPlanId && bwd.CalendarDate == "base")
+            .Include(bwd => bwd.UserExercises)
+            .ToList();
+
+            if (baseWorkoutDays == null || baseWorkoutDays.Count == 0)
+                return BadRequest(false);
+
+            for (int i = 0; i < baseWorkoutDays.Count; i++)
+            {
+                if (baseWorkoutDays[i].UserExercises.Count == 0)
+                    return BadRequest(false);
+            }
+
+            return Ok(true);
+        }
+
+        //tworzenie workoutdaya na podstawie bazowego dnia 
+        [HttpPost("create/nextDay/{baseDayId}")]
+        public async Task<IActionResult> CreateNextWorkoutDay([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromRoute] int baseDayId, [FromBody] CreateWorkoutDayDto dto)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+
+            var workoutPlan = await _context.WorkoutPlans
+            .Include(wp => wp.User)
+            .Include(wp => wp.WorkoutDays)
+            .FirstOrDefaultAsync(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var newWorkoutDay = _mapper.Map<WorkoutDay>(dto);
+            newWorkoutDay.WorkoutPlanId = workoutPlanId;
+            var date = newWorkoutDay.CalendarDate;
+            var existingWorkoutDay = await _context.WorkoutDays
+                .Where(wd => wd.WorkoutPlan.UserId == userId && wd.CalendarDate == date )
+                .FirstOrDefaultAsync();
+
+            if (existingWorkoutDay != null)
+            {
+                return BadRequest("Dzien o tej dacie juz istnieje w twoich WorkoutPlanach");
+            }
+
+            if (_context.CalendarDays.Count(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date) > 0)
+            {
+                var existingCalendarDay = await _context.CalendarDays
+                    .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDayId == newWorkoutDay.CalendarDayId)
+                    .FirstOrDefaultAsync();
+                if (existingCalendarDay == null)
+                {
+                    return BadRequest("Nie ma takiego utworzonego dnia");
+                }
+                newWorkoutDay.CalendarDayId = existingCalendarDay.CalendarDayId;
+            }
+            else
+            {
+                var existingCalendarDay = await _context.CalendarDays
+                  .Where(cd => cd.Calendar.UserId == userId && cd.CalendarDate == date)
+                  .FirstOrDefaultAsync();
+                if (existingCalendarDay == null)
+                {
+                    return BadRequest("Nie ma takiego utworzonego dnia");
+                }
+                newWorkoutDay.CalendarDayId = existingCalendarDay.CalendarDayId;
+            }
+
+            //finding wanted base day
+            var baseWorkoutDay = _context
+                .WorkoutDays
+                .FirstOrDefault(bwd => bwd.WorkoutDayId == baseDayId && bwd.CalendarDate == "base");
+            if (baseWorkoutDay == null)
+            {
+                return BadRequest("Nie ma takiego dnia bazowego");
+            }
+          
+            //using base workout day as a template to create new workout day
+            newWorkoutDay.UserExercises = baseWorkoutDay.UserExercises;
+            _context.WorkoutDays.Add(newWorkoutDay);
+            _context.SaveChanges();
+
+            var workoutdayId = newWorkoutDay.WorkoutDayId;
+
+
+
+            //return Ok("Stworzyles WorkoutDay");
+            return new ObjectResult(workoutdayId);
+        }
         // Metoda tworzenia WorkoutDaya dla danego WorkoutPlanu
         [HttpPost("create")]
         public async Task<IActionResult> CreateWorkoutDay([FromRoute] int userId, [FromRoute] int workoutPlanId, [FromBody] CreateWorkoutDayDto dto)

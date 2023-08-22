@@ -23,6 +23,55 @@ namespace workoutapp.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("getByDate/{date}")]
+        public async Task<IActionResult> GetCalendarDayId([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] string date)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var calendar = await _context
+            .Calendars
+            .Include(c => c.User)
+            .Include(c => c.CalendarDays)
+            .FirstOrDefaultAsync(c => c.CalendarId == calendarId);
+
+            if (calendar == null)
+            {
+                return NotFound();
+            }
+
+            if (calendar.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var calendarDay = await _context
+                .CalendarDays
+                .Where(cd => cd.CalendarDate == date)
+                .FirstOrDefaultAsync();
+
+            if(calendarDay == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(calendarDay.CalendarDayId);
+        }
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateCalendarDay([FromRoute] int userId, [FromRoute] int calendarId, [FromBody] CreateCalendarDayDto dto)
         {
