@@ -25,6 +25,144 @@ namespace workoutapp.Controllers
             _mapper = mapper;
         }
 
+        [HttpPut("setAsPrefered/{workoutPlanId}")]
+        public async Task<IActionResult> setAsPrefered([FromRoute] int userId, [FromRoute] int workoutPlanId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == loggeduserID);
+
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var workoutPlan = _context
+                .WorkoutPlans
+                .FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var preferedPlan = await _context
+                .WorkoutPlans
+                .Where(wp => wp.isPreferred == true && wp.UserId == userId)
+                .FirstOrDefaultAsync();
+
+            if(preferedPlan != null)
+            {
+                preferedPlan.isPreferred = false;
+            }
+
+
+            workoutPlan.isPreferred = true;
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpPut("notPrefered/{workoutPlanId}")]
+        public async Task<IActionResult> unsetAsPrefered([FromRoute] int userId, [FromRoute] int workoutPlanId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == loggeduserID);
+
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var workoutPlan = _context
+                .WorkoutPlans
+                .FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            workoutPlan.isPreferred = false;
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+        [HttpGet("isPrefered/{workoutPlanId}")]
+        public async Task<IActionResult> isPrefered([FromRoute] int userId, [FromRoute] int workoutPlanId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == loggeduserID);
+
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var workoutPlan = _context
+                .WorkoutPlans
+                .FirstOrDefault(wp => wp.WorkoutPlanId == workoutPlanId);
+
+            if (workoutPlan == null)
+            {
+                return NotFound();
+            }
+
+            if (workoutPlan.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            if(workoutPlan.isPreferred == true)
+            {
+                return Ok(true);
+            }
+            else
+            {
+                return Ok(false);
+            }
+        }
+
         // Metoda tworzenia WorkoutPlanu dla danego użytkownika
         [HttpPost("create")]
         public async Task<IActionResult> CreateWorkoutPlan([FromRoute] int userId, [FromBody] CreateWorkoutPlanDto dto)

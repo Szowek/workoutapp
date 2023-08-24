@@ -206,7 +206,6 @@ namespace workoutapp.Controllers
 
             var user = _context
                 .Users
-                .Include(u=>u.WorkoutPlans)
                 .FirstOrDefault(u => u.UserId == id);
 
             if (user == null)
@@ -219,15 +218,19 @@ namespace workoutapp.Controllers
                 return Forbid();
             }
 
-            var workoutPlans = user
+            var workoutPlan = _context
                .WorkoutPlans
-               .Where(wp => wp.isPreferred == true)
-               .ToList();
+               .Where(wp => wp.isPreferred == true && wp.UserId == user.UserId)
+               .FirstOrDefault();
 
-            
-            var workoutplansDtos = _mapper.Map<List<WorkoutPlanDto>>(workoutPlans);
+            if(workoutPlan == null)
+            {
+                return NotFound();
+            }
 
-            return Ok(workoutplansDtos);
+            var workoutplansDto = _mapper.Map<WorkoutPlanDto>(workoutPlan);
+
+            return Ok(workoutplansDto);
            
         }
 

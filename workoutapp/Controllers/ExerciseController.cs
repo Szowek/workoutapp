@@ -279,19 +279,19 @@ namespace workoutapp.Controllers
 
 
             exercise.NumberOfSeries = dto.NumberOfSeries; 
-            if (exercise.NumberOfSeries <= 1)
+            if (exercise.NumberOfSeries < 1)
             {
                 return BadRequest("Licza serii musi wynosic przynajmniej 1");
             }
 
            exercise.NumberOfRepeats = dto.NumberOfRepeats; 
-            if (exercise.NumberOfRepeats <= 1)
+            if (exercise.NumberOfRepeats < 1)
             {
                 return BadRequest("Licza powtorzen musi wynosic przynajmniej 1");
             }
 
             exercise.NumberOfLoad = dto.NumberOfLoad;
-            if(exercise.NumberOfLoad <= 0)
+            if(exercise.NumberOfLoad < 0)
             {
                 return BadRequest("Obciazenie musi wynosic przynajmniej 0");
             }
