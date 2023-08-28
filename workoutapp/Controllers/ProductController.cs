@@ -35,6 +35,90 @@ namespace workoutapp.Controllers
             return Ok(categories);
         }
 
+        [HttpPost("create/template")]
+        public async Task<IActionResult> CreateTemplateProduct([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] int calendarDayId, [FromRoute] int mealId,
+            [FromBody] CreateProductDto dto)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.WorkoutPlans)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var calendar = await _context
+            .Calendars
+            .FirstOrDefaultAsync(c => c.CalendarId == calendarId);
+
+            if (calendar == null)
+            {
+                return NotFound();
+            }
+
+            if (calendar.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var calendarDay = await _context.CalendarDays
+               .Include(c => c.Calendar)
+               .FirstOrDefaultAsync(c => c.CalendarDayId == calendarDayId);
+
+            if (calendarDay == null)
+            {
+                return NotFound();
+            }
+
+
+            if (calendarDay.Calendar.CalendarId != calendarId)
+            {
+                return Forbid();
+            }
+
+            var meal = await _context.Meals
+            .Include(m => m.CalendarDay)
+            .FirstOrDefaultAsync(m => m.MealId == mealId);
+
+            if (meal == null)
+            {
+                return NotFound();
+            }
+
+            if (meal.CalendarDay.CalendarDayId != calendarDayId)
+            {
+                return Forbid();
+            }
+
+            var productCategory = await _context.ProductCategories
+                 .FirstOrDefaultAsync(pc => pc.ProductCategoryName == dto.ProductCategoryName);
+
+            if (productCategory == null)
+            {
+                return BadRequest("Podales zla kategorie");
+            }
+
+            var newProduct = _mapper.Map<Product>(dto);
+
+            newProduct.ProductCategoryId = productCategory.ProductCategoryId;
+
+
+            _context.Products.Add(newProduct);
+            _context.SaveChanges();
+
+            return Ok(newProduct);
+        }
+
+
         [HttpPost("create")]
         public async Task<IActionResult> CreateProduct([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] int calendarDayId, [FromRoute] int mealId,
             [FromBody] CreateProductDto dto)
@@ -113,6 +197,9 @@ namespace workoutapp.Controllers
             newProduct.ProductCategoryId = productCategory.ProductCategoryId;
 
             meal.TotalKcal += newProduct.ProductKcal;
+            meal.TotalFat += newProduct.ProductFat;
+            meal.TotalCarbs += newProduct.ProductCarbs;
+            meal.TotalProtein += newProduct.ProductProtein;
 
 
             _context.Products.Add(newProduct);
@@ -344,10 +431,6 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (meal.CalendarDayId != calendarDayId)
-            {
-                return Forbid();
-            }
 
             var product = _context.Products
                .Include(p => p.Meal)
@@ -358,10 +441,6 @@ namespace workoutapp.Controllers
                 return NotFound();
             }
 
-            if (product.MealId != mealId)
-            {
-                return Forbid();
-            }
 
             var productDto = _mapper.Map<ProductDto>(product);
 
@@ -369,7 +448,88 @@ namespace workoutapp.Controllers
 
         }
 
+        [HttpGet("getAllByCategory/{categoryId}")]
+        public async Task<IActionResult> getAllByCategory([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] int calendarDayId, 
+            [FromRoute] int mealId, [FromRoute] int categoryId)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
 
+            var user = _context
+                .Users
+                .Include(u => u.Calendars)
+                .FirstOrDefault(u => u.UserId == userId);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.UserId != loggeduserID)
+            {
+
+                return Forbid();
+            }
+
+            var calendar = await _context.Calendars
+            .Include(c => c.User)
+            .Include(c => c.CalendarDays)
+            .FirstOrDefaultAsync(c => c.CalendarId == calendarId);
+
+            if (calendar == null)
+            {
+                return NotFound();
+            }
+
+            if (calendar.User.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var calendarDay = await _context.CalendarDays
+               .Include(c => c.Meals)
+               .FirstOrDefaultAsync(c => c.CalendarDayId == calendarDayId);
+
+            if (calendarDay == null)
+            {
+                return NotFound();
+            }
+
+            if (calendarDay.CalendarId != calendarId)
+            {
+                return Forbid();
+            }
+
+            var meal = _context.Meals
+                .Include(m => m.CalendarDay)
+                .Include(m => m.Products)
+                .FirstOrDefault(m => m.MealId == mealId);
+
+            if (meal == null)
+            {
+                return NotFound();
+            }
+
+            if (meal.CalendarDayId != calendarDayId)
+            {
+                return Forbid();
+            }
+
+            var products = _context
+                .Products
+                .Where(p => p.ProductCategoryId == categoryId && p.ProductWeight == 0)
+                .ToList();
+
+            products = products.DistinctBy(p => p.ProductName).ToList();
+
+            if (products.Count > 0)
+            {
+                return Ok(products);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
 
         [HttpGet("GetAll")]
         [AllowAnonymous]

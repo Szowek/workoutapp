@@ -11,6 +11,12 @@ namespace workoutapp.Models
 
         [Required]
         public int ProductKcal { get; set; }
+
+        public int ProductWeight { get; set; }
+        public float ProductProtein { get; set; }
+        public float ProductCarbs { get; set; }
+
+        public float ProductFat { get; set; }
         public int ProductCategoryId { get; set; }
 
         [Required]

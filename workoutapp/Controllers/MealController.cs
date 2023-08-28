@@ -194,7 +194,6 @@ namespace workoutapp.Controllers
             }
 
             var calendarDay = await _context.CalendarDays
-               .Include(c => c.Meals)
                .FirstOrDefaultAsync(c => c.CalendarDayId == calendarDayId);
 
             if (calendarDay == null)
@@ -207,9 +206,20 @@ namespace workoutapp.Controllers
                 return Forbid();
             }
 
-            var mealsDtos = _mapper.Map<List<MealDto>>(calendarDay.Meals);
+            var meals = _context
+                .Meals
+                .Include(m => m.Products)
+                .Where(c => c.CalendarDayId == calendarDayId)
+                .ToList();
 
-            return Ok(mealsDtos);
+            List<MealDto> list = new List<MealDto>();
+
+            foreach(var meal in meals)
+            {
+                list.Add(_mapper.Map<MealDto>(meal));
+            }
+
+            return Ok(list);
 
         }
 
@@ -344,9 +354,8 @@ namespace workoutapp.Controllers
 
             var meal = _context
                 .Meals
-                .Include(c => c.CalendarDay)
-                .Include(m => m.Products)
-                .FirstOrDefault(c => c.CalendarDayId == calendarDayId);
+                .Where(m => m.MealId == mealId)
+                .FirstOrDefault();
 
             if (meal == null)
             {

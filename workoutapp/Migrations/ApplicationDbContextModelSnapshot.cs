@@ -184,8 +184,17 @@ namespace workoutapp.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<float>("TotalCarbs")
+                        .HasColumnType("real");
+
+                    b.Property<float>("TotalFat")
+                        .HasColumnType("real");
+
                     b.Property<int>("TotalKcal")
                         .HasColumnType("integer");
+
+                    b.Property<float>("TotalProtein")
+                        .HasColumnType("real");
 
                     b.HasKey("MealId");
 
@@ -233,6 +242,9 @@ namespace workoutapp.Migrations
                     b.Property<int>("MealId")
                         .HasColumnType("integer");
 
+                    b.Property<float>("ProductCarbs")
+                        .HasColumnType("real");
+
                     b.Property<int>("ProductCategoryId")
                         .HasColumnType("integer");
 
@@ -240,12 +252,21 @@ namespace workoutapp.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<float>("ProductFat")
+                        .HasColumnType("real");
+
                     b.Property<int>("ProductKcal")
                         .HasColumnType("integer");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<float>("ProductProtein")
+                        .HasColumnType("real");
+
+                    b.Property<int>("ProductWeight")
+                        .HasColumnType("integer");
 
                     b.HasKey("ProductId");
 

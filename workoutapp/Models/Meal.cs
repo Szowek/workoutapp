@@ -13,6 +13,12 @@ namespace workoutapp.Models
 
         public int TotalKcal { get; set; } = 0;
 
+        public float TotalProtein { get; set; } = 0;
+
+        public float TotalFat { get; set; } = 0;
+
+        public float TotalCarbs { get; set; } = 0;
+
         public int CalendarDayId { get; set; }
 
         public virtual CalendarDay CalendarDay { get; set; }
