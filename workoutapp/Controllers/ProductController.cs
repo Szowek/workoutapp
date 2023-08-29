@@ -109,8 +109,15 @@ namespace workoutapp.Controllers
 
             var newProduct = _mapper.Map<Product>(dto);
 
-            newProduct.ProductCategoryId = productCategory.ProductCategoryId;
+            var templateMealExample = _context
+                .Products
+                .Where(p => p.ProductWeight == 0)
+                .FirstOrDefault();
 
+            var templateMealId = templateMealExample.MealId;
+
+            newProduct.ProductCategoryId = productCategory.ProductCategoryId;
+            newProduct.MealId = templateMealId;
 
             _context.Products.Add(newProduct);
             _context.SaveChanges();
@@ -196,10 +203,10 @@ namespace workoutapp.Controllers
             newProduct.MealId = mealId;
             newProduct.ProductCategoryId = productCategory.ProductCategoryId;
 
-            meal.TotalKcal += newProduct.ProductKcal;
-            meal.TotalFat += newProduct.ProductFat;
-            meal.TotalCarbs += newProduct.ProductCarbs;
-            meal.TotalProtein += newProduct.ProductProtein;
+            meal.TotalKcal += (int) (newProduct.ProductWeight * (newProduct.ProductKcal/100.0));
+            meal.TotalFat += newProduct.ProductWeight * (newProduct.ProductFat / 100);
+            meal.TotalCarbs += newProduct.ProductWeight * (newProduct.ProductCarbs / 100);
+            meal.TotalProtein += newProduct.ProductWeight * (newProduct.ProductProtein / 100);
 
 
             _context.Products.Add(newProduct);
@@ -288,7 +295,103 @@ namespace workoutapp.Controllers
                 return Forbid();
             }
 
+
+            meal.TotalKcal -= (int)(product.ProductWeight * (product.ProductKcal / 100.0));
+            meal.TotalFat -= product.ProductWeight * (product.ProductFat / 100);
+            meal.TotalCarbs -= product.ProductWeight * (product.ProductCarbs / 100);
+            meal.TotalProtein -= product.ProductWeight * (product.ProductProtein / 100);
             _context.Products.Remove(product);
+            _context.SaveChanges();
+
+            return Ok("Usunales Product");
+        }
+
+        [HttpPut("{productId}/edit")]
+        public async Task<IActionResult> EditProduct([FromRoute] int userId, [FromRoute] int calendarId, [FromRoute] int calendarDayId, [FromRoute] int mealId,
+    [FromRoute] int productId, [FromBody] CreateProductDto dto)
+        {
+            int loggeduserID = Convert.ToInt32(HttpContext.User.FindFirstValue("UserId"));
+
+            var user = _context
+                .Users
+                .Include(u => u.Calendars)
+                .FirstOrDefault(u => u.UserId == loggeduserID);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (loggeduserID != user.UserId)
+            {
+                return Forbid();
+            }
+
+            var calendar = _context
+                .Calendars
+                .Include(c => c.CalendarDays)
+                .FirstOrDefault(c => c.CalendarId == calendarId);
+
+            if (calendar == null)
+            {
+                return NotFound();
+            }
+
+            if (calendar.UserId != userId)
+            {
+                return Forbid();
+            }
+
+            var calendarDay = calendar.CalendarDays.FirstOrDefault(c => c.CalendarDayId == calendarDayId);
+            if (calendarDay == null)
+            {
+                return NotFound();
+            }
+
+            if (calendarDay.CalendarId != calendarId)
+            {
+                return Forbid();
+            }
+
+
+            var meal = _context.Meals
+                .Include(m => m.CalendarDay)
+                .Include(m => m.Products)
+                .FirstOrDefault(m => m.MealId == mealId);
+
+            if (meal == null)
+            {
+                return NotFound();
+            }
+
+            if (meal.CalendarDayId != calendarDayId)
+            {
+                return Forbid();
+            }
+
+            var product = _context.Products
+               .Include(p => p.Meal)
+               .FirstOrDefault(m => m.ProductId == productId);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            if (product.MealId != mealId)
+            {
+                return Forbid();
+            }
+            meal.TotalKcal -= (int)(product.ProductWeight * (product.ProductKcal / 100.0));
+            meal.TotalFat -= product.ProductWeight * (product.ProductFat / 100);
+            meal.TotalCarbs -= product.ProductWeight * (product.ProductCarbs / 100);
+            meal.TotalProtein -= product.ProductWeight * (product.ProductProtein / 100);
+            product.ProductWeight = dto.ProductWeight;
+            meal.TotalKcal += (int)(product.ProductWeight * (product.ProductKcal / 100.0));
+            meal.TotalFat += product.ProductWeight * (product.ProductFat / 100);
+            meal.TotalCarbs += product.ProductWeight * (product.ProductCarbs / 100);
+            meal.TotalProtein += product.ProductWeight * (product.ProductProtein / 100);
+
             _context.SaveChanges();
 
             return Ok("Usunales Product");
